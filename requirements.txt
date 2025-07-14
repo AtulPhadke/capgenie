@@ -1,0 +1,6 @@
+pyahocorasick
+BioPython
+plotly
+pandas
+pybind11
+inquirer

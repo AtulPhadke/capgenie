@@ -1,0 +1,27 @@
+{
+    "required": [
+        "-f | FOLDER_PATH |", 
+        "-o | FOLDER_PATH |",
+        {"SEARCH or UNKNOWN": [
+            "Evaluate pooled vector barcodes",
+            "-cf | CAPSID_CSV |",
+            {"-unk | FOO |" : [
+                "Evaluate capsid library selections",
+                "-f1 FLANK1", 
+                "-f2 FLANK2"
+            ]}
+    ]}],
+    "optionals": [
+        "-s",
+        "-e",
+        "-b",
+        "-fd",
+        "-w",
+        "-qual",
+        "-cls"
+    ],
+    "desktop": [
+        "-ses",
+        "-sf"
+    ] 
+}
