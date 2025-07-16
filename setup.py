@@ -65,17 +65,6 @@ ext_modules = [
         language="c++",
         extra_compile_args=["-std=c++17"],
     ),
-    Extension(
-        "capgenie.translate",
-        ["src/capgenie/translate.cpp"],
-        include_dirs=[
-            get_pybind_include(),
-            get_pybind_include(user=True),
-        ],
-        extra_link_args=[f"-L{python_libdir}"],
-        language="c++",
-        extra_compile_args=["-std=c++17"],
-    ),
 ]
 
 setup(
