@@ -3,6 +3,7 @@ from setuptools.command.build_ext import build_ext
 import sysconfig
 import platform
 import os
+import subprocess
 
 class get_pybind_include(object):
     """Helper class to determine the pybind11 include path, based on the python version"""
@@ -12,6 +13,20 @@ class get_pybind_include(object):
     def __str__(self):
         import pybind11
         return pybind11.get_include(self.user)
+
+class CustomBuildExt(build_ext):
+    """Custom build command to handle platform-specific compilation"""
+    
+    def build_extension(self, ext):
+        # Set platform-specific compiler options
+        if platform.system() == "Windows":
+            # Ensure we're using the right compiler on Windows
+            if not hasattr(self.compiler, 'compiler_so'):
+                self.compiler.compiler_so = ['cl.exe']
+            if not hasattr(self.compiler, 'compiler_cxx'):
+                self.compiler.compiler_cxx = ['cl.exe']
+        
+        super().build_extension(ext)
 
 def l_requirements(filename):
     with open(filename) as f:
@@ -29,8 +44,11 @@ def get_platform_flags():
         link_args = [f"-L{python_libdir}"] if python_libdir else []
         print(f"macOS flags: compile={compile_args}, link={link_args}")
     elif system == "Windows":  # Windows
-        compile_args = ["/std:c++17"]
-        link_args = [f"/LIBPATH:{python_libdir}"] if python_libdir else []
+        # Windows-specific compilation flags
+        compile_args = ["/std:c++17", "/EHsc", "/MD"]
+        link_args = []
+        if python_libdir:
+            link_args.append(f"/LIBPATH:{python_libdir}")
         print(f"Windows flags: compile={compile_args}, link={link_args}")
     else:  # Linux and other Unix-like systems
         compile_args = ["-std=c++17"]
@@ -95,7 +113,7 @@ setup(
     name="capgenie",
     version="0.1",
     ext_modules=ext_modules,
-    cmdclass={"build_ext": build_ext},
+    cmdclass={"build_ext": CustomBuildExt},
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=l_requirements("requirements.txt"),
