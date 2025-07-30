@@ -221,7 +221,7 @@ FilterResult filter_count(const char* file, char* upstream_refseq, char* downstr
         return result;
     }
 
-    struct stat file_stat;
+    stat_t file_stat;
     if (fstat(fd, &file_stat) == -1) {
         std::cerr << "Error getting file size." << std::endl;
         close(fd);

@@ -136,7 +136,7 @@ DenoiseResult denoise(const char* filename, const char* file_path, const char* o
     }
 
     // Get file size
-    struct stat sb;
+    stat_t sb;
     if (fstat(fd, &sb) == -1) {
         std::cerr << "Error getting file size!\n";
         close(fd);

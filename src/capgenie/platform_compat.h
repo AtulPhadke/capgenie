@@ -7,6 +7,9 @@
     #include <fcntl.h>
     #include <sys/stat.h>
     
+    // Define MAP_FAILED before using it
+    #define MAP_FAILED ((void*)-1)
+    
     // Windows equivalents for Unix functions
     #define open _open
     #define close _close
@@ -14,6 +17,14 @@
     #define write _write
     #define lseek _lseek
     #define stat _stat
+    #define fstat _fstat
+    
+    // Windows uses different stat types, so we need to handle this
+    #ifdef _WIN32
+        typedef struct _stat64i32 stat_t;
+    #else
+        typedef struct stat stat_t;
+    #endif
     
     // Memory mapping on Windows
     #include <memoryapi.h>
@@ -42,8 +53,6 @@
     int munmap(void* addr, size_t length) {
         return UnmapViewOfFile(addr) ? 0 : -1;
     }
-    
-    #define MAP_FAILED ((void*)-1)
     
 #else
     // Unix/Linux/macOS includes
