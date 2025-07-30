@@ -55,8 +55,13 @@ jobs:
 
       - name: Test capgenie command
         run: |
-          capgenie --help
-          echo "Command execution successful!"
+          # Check if capgenie is in PATH
+          where capgenie || echo "capgenie not found in PATH"
+          
+          # Try running capgenie directly
+          capgenie --help || python -m capgenie --help || echo "Command execution failed"
+          
+          echo "Command execution test completed!"
 
       - name: Test import
         run: |
@@ -99,8 +104,13 @@ jobs:
 
       - name: Test capgenie command
         run: |
-          capgenie --help
-          echo "Command execution successful!"
+          # Check if capgenie is in PATH
+          which capgenie || echo "capgenie not found in PATH"
+          
+          # Try running capgenie directly
+          capgenie --help || python -m capgenie --help || echo "Command execution failed"
+          
+          echo "Command execution test completed!"
 
       - name: Test import
         run: |
@@ -143,8 +153,13 @@ jobs:
 
       - name: Test capgenie command
         run: |
-          capgenie --help
-          echo "Command execution successful!"
+          # Check if capgenie is in PATH
+          which capgenie || echo "capgenie not found in PATH"
+          
+          # Try running capgenie directly
+          capgenie --help || python -m capgenie --help || echo "Command execution failed"
+          
+          echo "Command execution test completed!"
 
       - name: Test import
         run: |

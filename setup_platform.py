@@ -10,6 +10,11 @@ import platform
 import subprocess
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows compatibility
+if platform.system() == "Windows":
+    import os
+    os.environ['PYTHONIOENCODING'] = 'utf-8'
+
 def check_compiler():
     """Check if a suitable C++ compiler is available"""
     system = platform.system()
@@ -18,47 +23,47 @@ def check_compiler():
         # Check for Visual Studio or MinGW
         try:
             subprocess.run(["cl"], capture_output=True, check=True)
-            print("✓ Visual Studio compiler found")
+            print("[OK] Visual Studio compiler found")
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
             try:
                 subprocess.run(["g++", "--version"], capture_output=True, check=True)
-                print("✓ MinGW compiler found")
+                print("[OK] MinGW compiler found")
                 return True
             except (subprocess.CalledProcessError, FileNotFoundError):
-                print("✗ No suitable C++ compiler found on Windows")
+                print("[ERROR] No suitable C++ compiler found on Windows")
                 print("  Please install Visual Studio Build Tools or MinGW")
                 return False
     
     elif system == "Darwin":  # macOS
         try:
             subprocess.run(["clang++", "--version"], capture_output=True, check=True)
-            print("✓ Clang compiler found")
+            print("[OK] Clang compiler found")
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
-            print("✗ No C++ compiler found on macOS")
+            print("[ERROR] No C++ compiler found on macOS")
             print("  Please install Xcode Command Line Tools: xcode-select --install")
             return False
     
     else:  # Linux and other Unix-like systems
         try:
             subprocess.run(["g++", "--version"], capture_output=True, check=True)
-            print("✓ GCC compiler found")
+            print("[OK] GCC compiler found")
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
-            print("✗ No C++ compiler found")
+            print("[ERROR] No C++ compiler found")
             print("  Please install GCC: sudo apt-get install build-essential (Ubuntu/Debian)")
             return False
 
 def check_python_version():
     """Check if Python version is compatible"""
     version = sys.version_info
-    if version < (3, 8):
-        print(f"✗ Python {version.major}.{version.minor} is not supported")
-        print("  Please use Python 3.8 or higher")
+    if version < (3, 12):
+        print(f"[ERROR] Python {version.major}.{version.minor} is not supported")
+        print("  Please use Python 3.12 or higher")
         return False
     
-    print(f"✓ Python {version.major}.{version.minor}.{version.micro} is compatible")
+    print(f"[OK] Python {version.major}.{version.minor}.{version.micro} is compatible")
     return True
 
 def install_dependencies():
@@ -66,10 +71,10 @@ def install_dependencies():
     print("Installing dependencies...")
     try:
         subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
-        print("✓ Dependencies installed successfully")
+        print("[OK] Dependencies installed successfully")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"✗ Failed to install dependencies: {e}")
+        print(f"[ERROR] Failed to install dependencies: {e}")
         return False
 
 def main():
@@ -91,7 +96,7 @@ def main():
     if not install_dependencies():
         sys.exit(1)
     
-    print("\n✓ Platform setup completed successfully!")
+    print("\n[OK] Platform setup completed successfully!")
     print("You can now run: pip install -e .")
 
 if __name__ == "__main__":
