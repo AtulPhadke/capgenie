@@ -23,3 +23,6 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.dynamic]
 dependencies = {file = "requirements.txt"}
+
+[project.scripts]
+capgenie = "capgenie.cli:main"

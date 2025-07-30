@@ -68,6 +68,7 @@ ext_modules = [
         include_dirs=[
             str(get_pybind_include()),
             str(get_pybind_include(user=True)),
+            "src/capgenie",
         ],
         extra_link_args=link_args,
         language="c++",
@@ -79,6 +80,7 @@ ext_modules = [
         include_dirs=[
             str(get_pybind_include()),
             str(get_pybind_include(user=True)),
+            "src/capgenie",
         ],
         extra_link_args=link_args,
         language="c++",
@@ -90,6 +92,7 @@ ext_modules = [
         include_dirs=[
             str(get_pybind_include()),
             str(get_pybind_include(user=True)),
+            "src/capgenie",
         ],
         extra_link_args=link_args,
         language="c++",
@@ -116,10 +119,5 @@ setup(
     cmdclass={"build_ext": CustomBuildExt},
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=l_requirements("requirements.txt"),
-    entry_points={
-        'console_scripts': [
-            'capgenie = capgenie.cli:main',
-        ],
-    },
+    # Remove install_requires and entry_points to avoid conflicts with pyproject.toml
 )
