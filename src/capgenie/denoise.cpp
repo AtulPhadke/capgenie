@@ -1,7 +1,9 @@
 // Created by Atul Phadke, February 12th, 2025
 
-
-#define _GNU_SOURCE
+// Platform-specific definitions
+#ifdef __linux__
+    #define _GNU_SOURCE
+#endif
 #include <iostream>
 #include <vector>
 #include <thread>

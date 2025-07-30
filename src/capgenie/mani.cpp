@@ -18,6 +18,19 @@ std::string get_cache_folder() {
         myPath = std::getenv("LOCALAPPDATA") + "\\capgenie\\cache";
     #elif defined(__APPLE__) || defined(__MACH__)
         myPath = "~/Library/Caches/capgenie";
+    #else
+        // Linux and other Unix systems
+        const char* xdg_cache = std::getenv("XDG_CACHE_HOME");
+        if (xdg_cache) {
+            myPath = std::string(xdg_cache) + "/capgenie";
+        } else {
+            const char* home = std::getenv("HOME");
+            if (home) {
+                myPath = std::string(home) + "/.cache/capgenie";
+            } else {
+                myPath = "/tmp/capgenie";
+            }
+        }
     #endif
         return myPath.string();
 }

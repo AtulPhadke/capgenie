@@ -1,6 +1,17 @@
 #pragma once
 
+// Platform detection
 #ifdef _WIN32
+    #define PLATFORM_WINDOWS 1
+#elif defined(__APPLE__)
+    #define PLATFORM_MACOS 1
+#elif defined(__linux__)
+    #define PLATFORM_LINUX 1
+#else
+    #define PLATFORM_UNIX 1
+#endif
+
+#ifdef PLATFORM_WINDOWS
     // Windows-specific includes
     #include <windows.h>
     #include <io.h>
@@ -18,13 +29,6 @@
     #define lseek _lseek
     #define stat _stat
     #define fstat _fstat
-    
-    // Windows uses different stat types, so we need to handle this
-    #ifdef _WIN32
-        typedef struct _stat64i32 stat_t;
-    #else
-        typedef struct stat stat_t;
-    #endif
     
     // Memory mapping on Windows
     #include <memoryapi.h>
@@ -61,8 +65,33 @@
     #include <sys/types.h>
     #include <fcntl.h>
     #include <unistd.h>
+    
+    // Linux-specific includes
+    #ifdef PLATFORM_LINUX
+        #include <features.h>
+    #endif
+    
+    // macOS-specific includes
+    #ifdef PLATFORM_MACOS
+        #include <TargetConditionals.h>
+    #endif
 #endif
 
 #include <string>
 #include <vector>
-#include <unordered_map> 
+#include <unordered_map>
+
+// Cross-platform stat type definition
+#ifdef PLATFORM_WINDOWS
+    typedef struct _stat64i32 stat_t;
+#else
+    typedef struct stat stat_t;
+#endif
+
+// Platform-specific constants and macros
+#ifndef MAP_FAILED
+    #define MAP_FAILED ((void*)-1)
+#endif
+
+// Ensure off_t is available on all platforms
+#include <sys/types.h> 
