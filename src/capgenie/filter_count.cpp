@@ -5,14 +5,7 @@
 #include <pybind11/stl.h>
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string>
-#include <unordered_map>
+#include "platform_compat.h"
 
 namespace py = pybind11;
 

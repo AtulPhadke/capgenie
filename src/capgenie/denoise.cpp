@@ -3,17 +3,14 @@
 
 #define _GNU_SOURCE
 #include <iostream>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <unistd.h>
 #include <vector>
 #include <thread>
 #include <atomic>
-#include <sys/stat.h>
 #include <fstream>
 #include <mutex>
 #include <filesystem>
 #include <pybind11/pybind11.h>
+#include "platform_compat.h"
 
 namespace py = pybind11;
 
