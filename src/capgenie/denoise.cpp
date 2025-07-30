@@ -11,6 +11,7 @@
 #include <fstream>
 #include <mutex>
 #include <filesystem>
+#include <cstring>
 #include <pybind11/pybind11.h>
 #include "platform_compat.h"
 
@@ -26,14 +27,9 @@ std::atomic<size_t> low_quality_reads(0);
 std::atomic<size_t> num_reads(0);
 // Variables for storing read quality data
 
-char* joinPaths(const char* path1, const char* path2) {
+std::string joinPaths(const char* path1, const char* path2) {
     if (!path1) path1 = "";
     if (!path2) path2 = "";
-
-    size_t len1 = std::strlen(path1);
-    size_t len2 = std::strlen(path2);
-    const char* prefix = "denoise_";
-    size_t prefixLen = std::strlen(prefix);
 
     const char* filename = std::strrchr(path2, '/');
     const char* filenameAlt = std::strrchr(path2, '\\');
@@ -52,14 +48,10 @@ char* joinPaths(const char* path1, const char* path2) {
     }
 
     // Compute new filename with "denoise_" prefix
-    std::string newFileName = prefix + filenameOnly;
+    std::string newFileName = "denoise_" + filenameOnly;
     std::string finalPath = std::string(path1) + "/" + directory + newFileName;
 
-    // Allocate memory for the result
-    char* result = new char[finalPath.size() + 1];
-    std::strcpy(result, finalPath.c_str());
-
-    return result;
+    return finalPath;
 }
 
 void process_chunk(const char* data, size_t start, size_t end, std::ofstream& output) {
