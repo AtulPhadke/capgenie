@@ -1,0 +1,35 @@
+# Ignore everything by default
+/*
+
+# But do not ignore these files/folders:
+!assets/
+!src/
+!src/capgenie/
+!writeup.docx
+!setup.py
+!requirements.txt
+!README.md
+!pyproject.toml
+!flags.json
+!setup_platform.py
+!INSTALL.md
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+
+# Ignore everything else in src except capgenie
+src/*
+!src/capgenie/
+
+# Ignore unwanted files and folders
+.DS_Store
+build/
+output/
+tests/
+examples/
+ex_barcode_csv/
+src/capgenie.egg-info/
+~$*
+*.pyc
+__pycache__/
+*.so 

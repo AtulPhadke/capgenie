@@ -1,0 +1,200 @@
+name: Test Installation on All Platforms
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+      - 'src/**'
+      - '.github/workflows/test-installation.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+      - 'src/**'
+      - '.github/workflows/test-installation.yml'
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Visual Studio Build Tools
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install build dependencies
+        run: |
+          pip install wheel setuptools pybind11
+
+      - name: Run platform setup check
+        run: python setup_platform.py
+
+      - name: Test pip install -e .
+        run: |
+          pip install -e .
+          echo "Installation successful!"
+
+      - name: Test capgenie command
+        run: |
+          capgenie --help
+          echo "Command execution successful!"
+
+      - name: Test import
+        run: |
+          python -c "import capgenie; print('Import successful!')"
+
+  test-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Xcode Command Line Tools
+        run: |
+          xcode-select --install || true
+          sudo xcodebuild -license accept
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install build dependencies
+        run: |
+          pip install wheel setuptools pybind11
+
+      - name: Run platform setup check
+        run: python setup_platform.py
+
+      - name: Test pip install -e .
+        run: |
+          pip install -e .
+          echo "Installation successful!"
+
+      - name: Test capgenie command
+        run: |
+          capgenie --help
+          echo "Command execution successful!"
+
+      - name: Test import
+        run: |
+          python -c "import capgenie; print('Import successful!')"
+
+  test-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential g++
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install build dependencies
+        run: |
+          pip install wheel setuptools pybind11
+
+      - name: Run platform setup check
+        run: python setup_platform.py
+
+      - name: Test pip install -e .
+        run: |
+          pip install -e .
+          echo "Installation successful!"
+
+      - name: Test capgenie command
+        run: |
+          capgenie --help
+          echo "Command execution successful!"
+
+      - name: Test import
+        run: |
+          python -c "import capgenie; print('Import successful!')"
+
+  test-dependencies:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential g++
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install build dependencies
+        run: |
+          pip install wheel setuptools pybind11
+
+      - name: Install capgenie
+        run: pip install -e .
+
+      - name: Test all dependencies
+        run: |
+          python -c "
+          import capgenie
+          import pyahocorasick
+          import Bio
+          import plotly
+          import pandas
+          import inquirer
+          print('All dependencies imported successfully!')
+          "
+
+      - name: Test basic functionality
+        run: |
+          python -c "
+          from capgenie import filter_module, denoise, mani
+          print('All C++ modules imported successfully!')
+          " 
