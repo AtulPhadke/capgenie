@@ -20,7 +20,6 @@
 !build-executable-windows.bat
 !build-all-executables.sh
 !EXECUTABLE_BUILD_README.md
-!hook-readchar.py
 
 # Ignore everything else in src except capgenie
 src/*
