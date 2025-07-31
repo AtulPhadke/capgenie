@@ -72,7 +72,7 @@ a = Analysis(
     datas=[
         ('src/capgenie', 'capgenie'),
         ('assets', 'assets'),
-    ] + collect_data_files('inquirer') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('pyahocorasick') + collect_data_files('logomaker'),
+    ] + collect_data_files('inquirer') + collect_data_files('readchar') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('pyahocorasick') + collect_data_files('logomaker'),
     hiddenimports=[
         'capgenie.bubble',
         'capgenie.biodistribution',
@@ -147,7 +147,7 @@ EOF
 
 # Build the executable
 print_status "Building executable with PyInstaller..."
-pyinstaller --clean --collect-all inquirer --collect-all readchar "$SPEC_FILE"
+pyinstaller --clean "$SPEC_FILE"
 
 # Test the executable
 print_status "Testing the executable..."
