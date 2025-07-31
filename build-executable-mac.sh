@@ -147,7 +147,7 @@ EOF
 
 # Build the executable
 print_status "Building executable with PyInstaller..."
-pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-metadata readchar "$SPEC_FILE"
+pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-metadata readchar --onefile src/capgenie/cli.py
 
 # Test the executable
 print_status "Testing the executable..."

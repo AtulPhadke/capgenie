@@ -119,7 +119,7 @@ echo ^)
 
 REM Build the executable
 echo [INFO] Building executable with PyInstaller...
-pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-metadata readchar "%SPEC_FILE%"
+pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-metadata readchar --onefile src/capgenie/cli.py
 
 REM Test the executable
 echo [INFO] Testing the executable...
