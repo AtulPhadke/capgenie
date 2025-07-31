@@ -112,7 +112,7 @@ a = Analysis(
     ],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=['runtime-hook-readchar.py'],
+    runtime_hooks=[],
     excludes=[],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
@@ -147,7 +147,7 @@ EOF
 
 # Build the executable
 print_status "Building executable with PyInstaller..."
-pyinstaller --clean "$SPEC_FILE"
+pyinstaller --clean --collect-all inquirer --collect-all readchar "$SPEC_FILE"
 
 # Test the executable
 print_status "Testing the executable..."

@@ -84,7 +84,7 @@ echo         'inquirer.render.console._editor',
 echo     ],
 echo     hookspath=[],
 echo     hooksconfig={},
-echo     runtime_hooks=['runtime-hook-readchar.py'],
+echo     runtime_hooks=[],
 echo     excludes=[],
 echo     win_no_prefer_redirects=False,
 echo     win_private_assemblies=False,
@@ -119,7 +119,7 @@ echo ^)
 
 REM Build the executable
 echo [INFO] Building executable with PyInstaller...
-pyinstaller --clean "%SPEC_FILE%"
+pyinstaller --clean --collect-all inquirer --collect-all readchar "%SPEC_FILE%"
 
 REM Test the executable
 echo [INFO] Testing the executable...
