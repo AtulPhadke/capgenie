@@ -102,7 +102,7 @@ jobs:
 
     - name: Build Windows executable
       run: |
-        build-executable-windows.bat
+        .\build-executable-windows.bat
 
     - name: Test Windows executable
       run: |
