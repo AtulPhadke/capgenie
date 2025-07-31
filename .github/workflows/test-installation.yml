@@ -67,6 +67,11 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
+      - name: Install dependencies explicitly
+        run: |
+          pip install -r requirements.txt
+          echo "Dependencies installed!"
+
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -80,6 +85,17 @@ jobs:
       - name: Test import
         run: |
           python -c "import capgenie; print('Import successful!')"
+
+      - name: Test dependencies
+        run: |
+          python -c "
+          import pyahocorasick
+          import Bio
+          import plotly
+          import pandas
+          import inquirer
+          print('All dependencies imported successfully!')
+          "
 
   test-macos:
     runs-on: macos-latest
@@ -116,6 +132,11 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
+      - name: Install dependencies explicitly
+        run: |
+          pip install -r requirements.txt
+          echo "Dependencies installed!"
+
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -129,6 +150,17 @@ jobs:
       - name: Test import
         run: |
           python -c "import capgenie; print('Import successful!')"
+
+      - name: Test dependencies
+        run: |
+          python -c "
+          import pyahocorasick
+          import Bio
+          import plotly
+          import pandas
+          import inquirer
+          print('All dependencies imported successfully!')
+          "
 
   test-linux:
     runs-on: ubuntu-latest
@@ -165,6 +197,11 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
+      - name: Install dependencies explicitly
+        run: |
+          pip install -r requirements.txt
+          echo "Dependencies installed!"
+
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -178,6 +215,17 @@ jobs:
       - name: Test import
         run: |
           python -c "import capgenie; print('Import successful!')"
+
+      - name: Test dependencies
+        run: |
+          python -c "
+          import pyahocorasick
+          import Bio
+          import plotly
+          import pandas
+          import inquirer
+          print('All dependencies imported successfully!')
+          "
 
   test-dependencies:
     runs-on: ubuntu-latest
