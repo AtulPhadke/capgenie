@@ -15,7 +15,12 @@ get_cache_folder: None --> String
 std::string get_cache_folder() {
     fs::path myPath = "";
     #if defined(_WIN32) || defined(_WIN64)
-        myPath = std::getenv("LOCALAPPDATA") + "\\capgenie\\cache";
+        const char* localAppData = std::getenv("LOCALAPPDATA");
+        if (localAppData) {
+            myPath = std::string(localAppData) + "\\capgenie\\cache";
+        } else {
+            myPath = "C:\\Users\\Public\\capgenie\\cache";
+        }
     #elif defined(__APPLE__) || defined(__MACH__)
         myPath = "~/Library/Caches/capgenie";
     #else
