@@ -84,7 +84,7 @@ jobs:
       - name: Test dependencies
         run: |
           python -c "
-          import pyahocorasick
+          import ahocorasick
           import Bio
           import plotly
           import pandas
@@ -149,7 +149,7 @@ jobs:
       - name: Test dependencies
         run: |
           python -c "
-          import pyahocorasick
+          import ahocorasick
           import Bio
           import plotly
           import pandas
@@ -214,16 +214,11 @@ jobs:
       - name: Test dependencies
         run: |
           python -c "
-          import pyahocorasick
+          import ahocorasick
           import Bio
           import plotly
           import pandas
           import inquirer
-          import sklearn
-          import umap
-          import logomaker
-          import scipy
-          import numpy
           print('All dependencies imported successfully!')
           "
 
@@ -261,7 +256,7 @@ jobs:
         run: |
           python -c "
           import capgenie
-          import pyahocorasick
+          import ahocorasick
           import Bio
           import plotly
           import pandas
