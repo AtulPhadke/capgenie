@@ -89,11 +89,30 @@ a = Analysis(
         'matplotlib',
         'plotly',
         'biopython',
-        'pyahocorasick',
-        'scikit-learn',
-        'umap-learn',
+        'Bio',
+        'Bio.Seq',
+        'ahocorasick',
+        'sklearn',
+        'sklearn.cluster',
+        'sklearn.cluster.DBSCAN',
+        'umap',
+        'umap.umap_',
         'logomaker',
         'inquirer',
+        'readchar',
+        'inquirer.themes',
+        'inquirer.questions',
+        'inquirer.render',
+        'inquirer.render.console',
+        'inquirer.render.console._list',
+        'inquirer.render.console._text',
+        'inquirer.render.console._checkbox',
+        'inquirer.render.console._confirm',
+        'inquirer.render.console._password',
+        'inquirer.render.console._path',
+        'inquirer.render.console._editor',
+        'inquirer.render.console._rawlist',
+        'inquirer.render.console._expand',
     ],
     hookspath=[],
     hooksconfig={},
@@ -132,7 +151,7 @@ EOF
 
 # Build the executable
 print_status "Building executable with PyInstaller..."
-pyinstaller --clean "$SPEC_FILE"
+pyinstaller --clean --collect-all inquirer --collect-all readchar --collect-all biopython --collect-all sklearn --collect-all umap-learn --collect-all ahocorasick --collect-all logomaker "$SPEC_FILE"
 
 # Test the executable
 print_status "Testing the executable..."

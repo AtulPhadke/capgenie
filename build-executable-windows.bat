@@ -61,11 +61,30 @@ echo         'scipy',
 echo         'matplotlib',
 echo         'plotly',
 echo         'biopython',
-echo         'pyahocorasick',
-echo         'scikit-learn',
-echo         'umap-learn',
+echo         'Bio',
+echo         'Bio.Seq',
+echo         'ahocorasick',
+echo         'sklearn',
+echo         'sklearn.cluster',
+echo         'sklearn.cluster.DBSCAN',
+echo         'umap',
+echo         'umap.umap_',
 echo         'logomaker',
 echo         'inquirer',
+echo         'readchar',
+echo         'inquirer.themes',
+echo         'inquirer.questions',
+echo         'inquirer.render',
+echo         'inquirer.render.console',
+echo         'inquirer.render.console._list',
+echo         'inquirer.render.console._text',
+echo         'inquirer.render.console._checkbox',
+echo         'inquirer.render.console._confirm',
+echo         'inquirer.render.console._password',
+echo         'inquirer.render.console._path',
+echo         'inquirer.render.console._editor',
+echo         'inquirer.render.console._rawlist',
+echo         'inquirer.render.console._expand',
 echo     ],
 echo     hookspath=[],
 echo     hooksconfig={},
@@ -104,7 +123,7 @@ echo ^)
 
 REM Build the executable
 echo [INFO] Building executable with PyInstaller...
-pyinstaller --clean "%SPEC_FILE%"
+pyinstaller --clean --collect-all inquirer --collect-all readchar --collect-all biopython --collect-all sklearn --collect-all umap-learn --collect-all ahocorasick --collect-all logomaker "%SPEC_FILE%"
 
 REM Test the executable
 echo [INFO] Testing the executable...
