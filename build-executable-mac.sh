@@ -72,7 +72,7 @@ a = Analysis(
     datas=[
         ('src/capgenie', 'capgenie'),
         ('assets', 'assets'),
-    ] + collect_data_files('inquirer') + collect_data_files('readchar') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('pyahocorasick') + collect_data_files('logomaker'),
+    ] + collect_data_files('inquirer') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('pyahocorasick') + collect_data_files('logomaker'),
     hiddenimports=[
         'capgenie.bubble',
         'capgenie.biodistribution',
@@ -99,6 +99,8 @@ a = Analysis(
         'logomaker',
         'inquirer',
         'readchar',
+        'readchar.key',
+        'readchar.readkey',
         'inquirer.themes',
         'inquirer.questions',
         'inquirer.render',
@@ -111,7 +113,7 @@ a = Analysis(
         'inquirer.render.console._path',
         'inquirer.render.console._editor',
     ],
-    hookspath=[],
+    hookspath=['.'],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
