@@ -23,12 +23,14 @@
     
     // Windows equivalents for Unix functions
     #define open _open
-    #define close _close
     #define read _read
     #define write _write
     #define lseek _lseek
     #define stat _stat
     #define fstat _fstat
+    
+    // Use a more specific name for file descriptor close to avoid conflicts
+    inline int fd_close(int fd) { return _close(fd); }
     
     // Memory mapping on Windows
     #include <memoryapi.h>
@@ -75,6 +77,9 @@
     #ifdef PLATFORM_MACOS
         #include <TargetConditionals.h>
     #endif
+    
+    // Unix file descriptor close function
+    inline int fd_close(int fd) { return close(fd); }
 #endif
 
 #include <string>

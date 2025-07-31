@@ -224,13 +224,13 @@ FilterResult filter_count(const char* file, char* upstream_refseq, char* downstr
     stat_t file_stat;
     if (fstat(fd, &file_stat) == -1) {
         std::cerr << "Error getting file size." << std::endl;
-        close(fd);
+        fd_close(fd);
         return result;
     }
     size_t file_size = file_stat.st_size;
 
     char* mapped_data = (char*)mmap(nullptr, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    close(fd); // File descriptor can be closed after mmap
+    fd_close(fd); // File descriptor can be closed after mmap
 
     if (mapped_data == MAP_FAILED) {
         std::cerr << "Error mapping file." << std::endl;

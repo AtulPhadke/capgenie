@@ -134,17 +134,17 @@ DenoiseResult denoise(const char* filename, const char* file_path, const char* o
     stat_t sb;
     if (fstat(fd, &sb) == -1) {
         std::cerr << "Error getting file size!\n";
-        close(fd);
+        fd_close(fd);
         return result;
     }
     size_t file_size = sb.st_size;
     char* data = (char*)mmap(nullptr, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
     if (data == MAP_FAILED) {
         std::cerr << "Error memory-mapping file!\n";
-        close(fd);
+        fd_close(fd);
         return result;
     }
-    close(fd);
+    fd_close(fd);
 
     // Open output file
 
