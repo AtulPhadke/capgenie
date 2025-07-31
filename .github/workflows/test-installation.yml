@@ -67,11 +67,6 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
-      - name: Install dependencies explicitly
-        run: |
-          pip install -r requirements.txt
-          echo "Dependencies installed!"
-
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -94,6 +89,11 @@ jobs:
           import plotly
           import pandas
           import inquirer
+          import sklearn
+          import umap
+          import logomaker
+          import scipy
+          import numpy
           print('All dependencies imported successfully!')
           "
 
@@ -132,11 +132,6 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
-      - name: Install dependencies explicitly
-        run: |
-          pip install -r requirements.txt
-          echo "Dependencies installed!"
-
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -159,6 +154,11 @@ jobs:
           import plotly
           import pandas
           import inquirer
+          import sklearn
+          import umap
+          import logomaker
+          import scipy
+          import numpy
           print('All dependencies imported successfully!')
           "
 
@@ -197,11 +197,6 @@ jobs:
           pip install -e .
           echo "Installation successful!"
 
-      - name: Install dependencies explicitly
-        run: |
-          pip install -r requirements.txt
-          echo "Dependencies installed!"
-
       - name: Test capgenie command
         run: |
           # Check if capgenie is in PATH
@@ -224,6 +219,11 @@ jobs:
           import plotly
           import pandas
           import inquirer
+          import sklearn
+          import umap
+          import logomaker
+          import scipy
+          import numpy
           print('All dependencies imported successfully!')
           "
 
