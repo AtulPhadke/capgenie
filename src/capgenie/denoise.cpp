@@ -12,6 +12,7 @@
 #include <mutex>
 #include <filesystem>
 #include <cstring>
+#include <cstdint>
 #include <pybind11/pybind11.h>
 #include "platform_compat.h"
 
@@ -99,9 +100,9 @@ void process_chunk(const char* data, size_t start, size_t end, std::ofstream& ou
 
 struct DenoiseResult {
     double avg_quality;
-    size_t total_chars;
-    size_t low_quality_reads;
-    size_t num_reads;
+    int64_t total_chars;
+    int64_t low_quality_reads;
+    int64_t num_reads;
     int threshold;
     std::string output_filename;
 };
