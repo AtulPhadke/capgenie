@@ -45,7 +45,7 @@ def get_platform_flags():
         print(f"macOS flags: compile={compile_args}, link={link_args}")
     elif system == "Windows":  # Windows
         # Windows-specific compilation flags
-        compile_args = ["/std:c++17", "/EHsc", "/MD"]
+        compile_args = ["/std:c++17", "/EHsc", "/MD", "/D_CRT_SECURE_NO_WARNINGS"]
         link_args = []
         if python_libdir:
             link_args.append(f"/LIBPATH:{python_libdir}")

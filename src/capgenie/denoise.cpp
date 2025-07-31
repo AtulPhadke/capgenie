@@ -98,10 +98,10 @@ void process_chunk(const char* data, size_t start, size_t end, std::ofstream& ou
 }
 
 struct DenoiseResult {
-    int avg_quality;
-    int total_chars;
-    int low_quality_reads;
-    int num_reads;
+    double avg_quality;
+    size_t total_chars;
+    size_t low_quality_reads;
+    size_t num_reads;
     int threshold;
     std::string output_filename;
 };
