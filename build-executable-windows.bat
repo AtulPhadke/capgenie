@@ -44,7 +44,7 @@ echo     binaries=[],
 echo     datas=[
 echo         ^('src/capgenie', 'capgenie'^),
 echo         ^('assets', 'assets'^),
-echo     ] + collect_data_files^('inquirer'^) + collect_data_files^('readchar'^) + collect_data_files^('Bio'^) + collect_data_files^('sklearn'^) + collect_data_files^('umap'^) + collect_data_files^('pyahocorasick'^) + collect_data_files^('logomaker'^),
+echo     ] + collect_data_files^('inquirer'^) + collect_data_files^('readchar', include_py_files=True^) + collect_data_files^('Bio'^) + collect_data_files^('sklearn'^) + collect_data_files^('umap'^) + collect_data_files^('pyahocorasick'^) + collect_data_files^('logomaker'^),
 echo     hiddenimports=[
 echo         'capgenie.bubble',
 echo         'capgenie.biodistribution',
@@ -119,7 +119,7 @@ echo ^)
 
 REM Build the executable
 echo [INFO] Building executable with PyInstaller...
-pyinstaller --clean --copy-metadata readchar "%SPEC_FILE%"
+pyinstaller --clean "%SPEC_FILE%"
 
 REM Test the executable
 echo [INFO] Testing the executable...
