@@ -16,6 +16,10 @@
 !.github/
 !.github/workflows/
 !.github/workflows/*.yml
+!build-executable-mac.sh
+!build-executable-windows.bat
+!build-all-executables.sh
+!EXECUTABLE_BUILD_README.md
 
 # Ignore everything else in src except capgenie
 src/*
