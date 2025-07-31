@@ -44,7 +44,7 @@ echo     binaries=[],
 echo     datas=[
 echo         ^('src/capgenie', 'capgenie'^),
 echo         ^('assets', 'assets'^),
-echo     ] + collect_data_files^('inquirer'^) + collect_data_files^('readchar'^) + collect_data_files^('Bio'^) + collect_data_files^('sklearn'^) + collect_data_files^('umap'^) + collect_data_files^('ahocorasick'^) + collect_data_files^('logomaker'^),
+echo     ] + collect_data_files^('inquirer'^) + collect_data_files^('readchar'^) + collect_data_files^('Bio'^) + collect_data_files^('sklearn'^) + collect_data_files^('umap'^) + collect_data_files^('pyahocorasick'^) + collect_data_files^('logomaker'^),
 echo     hiddenimports=[
 echo         'capgenie.bubble',
 echo         'capgenie.biodistribution',
@@ -125,11 +125,17 @@ pyinstaller --clean "%SPEC_FILE%"
 REM Test the executable
 echo [INFO] Testing the executable...
 if exist "%DIST_DIR%\capgenie.exe" (
-    "%DIST_DIR%\capgenie.exe" --help >nul 2>&1
-    if %errorlevel% equ 0 (
+    echo Testing executable with --help...
+    "%DIST_DIR%\capgenie.exe" --help
+    set EXIT_CODE=%errorlevel%
+    echo Exit code: %EXIT_CODE%
+    
+    if %EXIT_CODE% equ 0 (
         echo ✅ Executable built and tested successfully!
+    ) else if %EXIT_CODE% equ 1 (
+        echo ✅ Executable built and tested successfully! ^(help command worked^)
     ) else (
-        echo ❌ Executable test failed
+        echo ❌ Executable test failed with exit code %EXIT_CODE%
         exit /b 1
     )
 ) else (

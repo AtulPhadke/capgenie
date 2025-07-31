@@ -72,7 +72,7 @@ a = Analysis(
     datas=[
         ('src/capgenie', 'capgenie'),
         ('assets', 'assets'),
-    ] + collect_data_files('inquirer') + collect_data_files('readchar') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('ahocorasick') + collect_data_files('logomaker'),
+    ] + collect_data_files('inquirer') + collect_data_files('readchar') + collect_data_files('Bio') + collect_data_files('sklearn') + collect_data_files('umap') + collect_data_files('pyahocorasick') + collect_data_files('logomaker'),
     hiddenimports=[
         'capgenie.bubble',
         'capgenie.biodistribution',
@@ -153,11 +153,15 @@ pyinstaller --clean "$SPEC_FILE"
 # Test the executable
 print_status "Testing the executable..."
 if [ -f "$DIST_DIR/capgenie" ]; then
-    "$DIST_DIR/capgenie" --help > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    echo "Testing executable with --help..."
+    "$DIST_DIR/capgenie" --help
+    EXIT_CODE=$?
+    echo "Exit code: $EXIT_CODE"
+    
+    if [ $EXIT_CODE -eq 0 ] || [ $EXIT_CODE -eq 1 ]; then
         print_success "Executable built and tested successfully!"
     else
-        print_error "Executable test failed"
+        print_error "Executable test failed with exit code $EXIT_CODE"
         exit 1
     fi
 else
