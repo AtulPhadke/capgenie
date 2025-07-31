@@ -61,6 +61,7 @@ pip install -e .
 print_status "Creating PyInstaller spec file..."
 cat > "$SPEC_FILE" << 'EOF'
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
 
 block_cipher = None
 

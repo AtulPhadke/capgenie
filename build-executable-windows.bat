@@ -33,6 +33,7 @@ REM Create PyInstaller spec file
 echo [INFO] Creating PyInstaller spec file...
 (
 echo # -*- mode: python ; coding: utf-8 -*-
+echo from PyInstaller.utils.hooks import collect_data_files
 echo.
 echo block_cipher = None
 echo.
