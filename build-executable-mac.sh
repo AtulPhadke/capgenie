@@ -147,7 +147,7 @@ EOF
 
 # Build the executable
 print_status "Building executable with PyInstaller..."
-pyinstaller --clean "$SPEC_FILE"
+pyinstaller --clean --copy-metadata readchar "$SPEC_FILE"
 
 # Test the executable
 print_status "Testing the executable..."

@@ -119,7 +119,7 @@ echo ^)
 
 REM Build the executable
 echo [INFO] Building executable with PyInstaller...
-pyinstaller --clean "%SPEC_FILE%"
+pyinstaller --clean --copy-metadata readchar "%SPEC_FILE%"
 
 REM Test the executable
 echo [INFO] Testing the executable...
