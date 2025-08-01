@@ -4,6 +4,28 @@ import os
 import ctypes
 from ctypes import wintypes
 
+def verify_dll_integrity(dll_path):
+    """Verify that a DLL file is not corrupted"""
+    try:
+        if not os.path.exists(dll_path):
+            return False, "DLL file does not exist"
+        
+        # Check file size (should be reasonable for python312.dll)
+        file_size = os.path.getsize(dll_path)
+        if file_size < 1000000:  # Less than 1MB is suspicious
+            return False, f"DLL file size too small: {file_size} bytes"
+        
+        # Try to open the file to check if it's readable
+        with open(dll_path, 'rb') as f:
+            # Read first few bytes to check if it's a valid PE file
+            header = f.read(2)
+            if header != b'MZ':
+                return False, "DLL file is not a valid PE file (missing MZ header)"
+        
+        return True, f"DLL appears valid (size: {file_size} bytes)"
+    except Exception as e:
+        return False, f"Error verifying DLL: {e}"
+
 def fix_python_dll_loading():
     """Fix Python DLL loading issues on Windows"""
     if os.name == 'nt':  # Windows
@@ -22,9 +44,18 @@ def fix_python_dll_loading():
             # Method 1: Try to load from current directory
             try:
                 print(f"Trying to load {python_dll_name} from current directory...")
-                ctypes.PyDLL(python_dll_name)
-                print(f"✓ Successfully loaded {python_dll_name} from current directory")
-                return
+                current_dll = os.path.join(os.getcwd(), python_dll_name)
+                if os.path.exists(current_dll):
+                    is_valid, message = verify_dll_integrity(current_dll)
+                    print(f"DLL integrity check: {message}")
+                    if is_valid:
+                        ctypes.PyDLL(current_dll)
+                        print(f"✓ Successfully loaded {python_dll_name} from current directory")
+                        return
+                    else:
+                        print(f"✗ DLL integrity check failed: {message}")
+                else:
+                    print(f"✗ DLL not found in current directory: {current_dll}")
             except OSError as e:
                 print(f"✗ Failed to load from current directory: {e}")
             
@@ -34,9 +65,14 @@ def fix_python_dll_loading():
                     dll_path = os.path.join(python_dir, python_dll_name)
                     print(f"Trying to load from Python directory: {dll_path}")
                     if os.path.exists(dll_path):
-                        ctypes.PyDLL(dll_path)
-                        print(f"✓ Successfully loaded {python_dll_name} from Python directory")
-                        return
+                        is_valid, message = verify_dll_integrity(dll_path)
+                        print(f"DLL integrity check: {message}")
+                        if is_valid:
+                            ctypes.PyDLL(dll_path)
+                            print(f"✓ Successfully loaded {python_dll_name} from Python directory")
+                            return
+                        else:
+                            print(f"✗ DLL integrity check failed: {message}")
                     else:
                         print(f"✗ DLL not found at: {dll_path}")
                 except OSError as e:
@@ -48,9 +84,14 @@ def fix_python_dll_loading():
                     dll_path = os.path.join(sys._MEIPASS, python_dll_name)
                     print(f"Trying to load from _MEIPASS: {dll_path}")
                     if os.path.exists(dll_path):
-                        ctypes.PyDLL(dll_path)
-                        print(f"✓ Successfully loaded {python_dll_name} from _MEIPASS")
-                        return
+                        is_valid, message = verify_dll_integrity(dll_path)
+                        print(f"DLL integrity check: {message}")
+                        if is_valid:
+                            ctypes.PyDLL(dll_path)
+                            print(f"✓ Successfully loaded {python_dll_name} from _MEIPASS")
+                            return
+                        else:
+                            print(f"✗ DLL integrity check failed: {message}")
                     else:
                         print(f"✗ DLL not found in _MEIPASS: {dll_path}")
                 except OSError as e:
@@ -61,9 +102,14 @@ def fix_python_dll_loading():
                 system32_path = os.path.join(os.environ.get('SystemRoot', 'C:\\Windows'), 'System32', python_dll_name)
                 print(f"Trying to load from System32: {system32_path}")
                 if os.path.exists(system32_path):
-                    ctypes.PyDLL(system32_path)
-                    print(f"✓ Successfully loaded {python_dll_name} from System32")
-                    return
+                    is_valid, message = verify_dll_integrity(system32_path)
+                    print(f"DLL integrity check: {message}")
+                    if is_valid:
+                        ctypes.PyDLL(system32_path)
+                        print(f"✓ Successfully loaded {python_dll_name} from System32")
+                        return
+                    else:
+                        print(f"✗ DLL integrity check failed: {message}")
                 else:
                     print(f"✗ DLL not found in System32: {system32_path}")
             except OSError as e:
@@ -136,13 +182,13 @@ def fix_readchar_metadata():
                     self.project_name = 'readchar'
                     self.version = '1.0.0'
                     self.location = os.path.dirname(__file__)
-                
+
                 def has_metadata(self, name):
                     return False
-                
+
                 def get_metadata(self, name):
                     return ''
-            
+
             # Register the dummy distribution
             pkg_resources.working_set.add(DummyDistribution())
             print("✓ Dummy readchar distribution created")

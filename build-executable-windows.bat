@@ -31,12 +31,16 @@ REM Ensure C++ extensions are built correctly
 echo Building C++ extensions...
 python setup.py build_ext --inplace
 
-REM Find Python DLL location and copy it if needed
+REM Find Python DLL location and verify it
 echo Finding Python DLL location...
-python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); print('Python executable:', sys.executable); print('Python directory:', python_dir); print('DLL path:', dll_path); print('DLL exists:', os.path.exists(dll_path))"
+python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); print('Python executable:', sys.executable); print('Python directory:', python_dir); print('DLL path:', dll_path); print('DLL exists:', os.path.exists(dll_path)); print('DLL size:', os.path.getsize(dll_path) if os.path.exists(dll_path) else 'N/A')"
 
-REM Build the executable with optimizations for speed
-echo Building executable with PyInstaller (optimized for startup speed)...
+REM Copy Python DLL to current directory to ensure it's available
+echo Copying Python DLL to current directory...
+python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); local_dll = 'python312.dll'; shutil.copy2(dll_path, local_dll) if os.path.exists(dll_path) else None; print('DLL copied to current directory:', os.path.exists(local_dll))"
+
+REM Build the executable with optimizations for speed (NO STRIPPING)
+echo Building executable with PyInstaller (optimized for startup speed, no stripping)...
 pyinstaller --clean ^
     --hidden-import=inquirer ^
     --hidden-import=readchar ^
@@ -46,7 +50,6 @@ pyinstaller --clean ^
     --hidden-import=capgenie.filter_module ^
     --copy-metadata readchar ^
     --onedir ^
-    --strip ^
     --optimize=2 ^
     --runtime-hook runtime-hook-readchar.py ^
     --additional-hooks-dir=. ^
@@ -58,6 +61,7 @@ pyinstaller --clean ^
     --exclude-module plotly.tests ^
     --collect-all capgenie ^
     --add-data "src/capgenie;capgenie" ^
+    --add-binary "python312.dll;." ^
     src/capgenie/cli.py
 
 REM Check if build succeeded
@@ -65,6 +69,9 @@ if exist "%DIST_DIR%\cli\cli.exe" (
     echo Build successful - testing executable
     echo Testing executable location: %DIST_DIR%\cli\cli.exe
     dir "%DIST_DIR%\cli"
+    echo Testing executable size and properties...
+    python -c "import os; exe_path = r'%DIST_DIR%\cli\cli.exe'; print('Executable size:', os.path.getsize(exe_path) if os.path.exists(exe_path) else 'Not found')"
+    echo Running executable test...
     "%DIST_DIR%\cli\cli.exe" --help
     echo Test completed
 ) else (
