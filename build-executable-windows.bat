@@ -71,11 +71,16 @@ if exist "%DIST_DIR%\cli\cli.exe" (
     dir "%DIST_DIR%\cli"
     echo Testing executable size and properties...
     python -c "import os; exe_path = r'%DIST_DIR%\cli\cli.exe'; print('Executable size:', os.path.getsize(exe_path) if os.path.exists(exe_path) else 'Not found')"
-    echo Running executable test...
-    "%DIST_DIR%\cli\cli.exe" --help
-    if %ERRORLEVEL% neq 0 (
-        echo Executable test failed with exit code %ERRORLEVEL%
+    echo Running executable test with detailed output capture...
+    "%DIST_DIR%\cli\cli.exe" --help > test_output.txt 2>&1
+    set TEST_EXIT_CODE=%ERRORLEVEL%
+    echo Test exit code: %TEST_EXIT_CODE%
+    echo Test output:
+    type test_output.txt
+    if %TEST_EXIT_CODE% neq 0 (
+        echo Executable test failed with exit code %TEST_EXIT_CODE%
         echo This may indicate a runtime issue
+        echo Full test output saved to test_output.txt
     ) else (
         echo Executable test completed successfully
     )
