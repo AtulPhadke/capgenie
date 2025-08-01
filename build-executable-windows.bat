@@ -31,6 +31,10 @@ REM Ensure C++ extensions are built correctly
 echo Building C++ extensions...
 python setup.py build_ext --inplace
 
+REM Find Python DLL location and copy it if needed
+echo Finding Python DLL location...
+python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); print('Python executable:', sys.executable); print('Python directory:', python_dir); print('DLL path:', dll_path); print('DLL exists:', os.path.exists(dll_path))"
+
 REM Build the executable with optimizations for speed
 echo Building executable with PyInstaller (optimized for startup speed)...
 pyinstaller --clean ^
@@ -45,6 +49,7 @@ pyinstaller --clean ^
     --strip ^
     --optimize=2 ^
     --runtime-hook runtime-hook-readchar.py ^
+    --additional-hooks-dir=. ^
     --exclude-module matplotlib.tests ^
     --exclude-module numpy.random.tests ^
     --exclude-module scipy.tests ^
@@ -52,11 +57,14 @@ pyinstaller --clean ^
     --exclude-module Bio.tests ^
     --exclude-module plotly.tests ^
     --collect-all capgenie ^
+    --add-data "src/capgenie;capgenie" ^
     src/capgenie/cli.py
 
 REM Check if build succeeded
 if exist "%DIST_DIR%\cli\cli.exe" (
     echo Build successful - testing executable
+    echo Testing executable location: %DIST_DIR%\cli\cli.exe
+    dir "%DIST_DIR%\cli"
     "%DIST_DIR%\cli\cli.exe" --help
     echo Test completed
 ) else (
@@ -73,6 +81,6 @@ echo set SCRIPT_DIR=%%~dp0
 echo "%SCRIPT_DIR%cli\cli.exe" %%*
 ) > "%DIST_DIR%\capgenie.bat"
 
-echo Windows build completed successfully
-echo Note: This creates a directory structure instead of a single file for faster startup.
-echo Use the launcher script 'capgenie.bat' for easier integration. 
+echo Build completed successfully!
+echo Executable location: %DIST_DIR%\cli\cli.exe
+echo Launcher script: %DIST_DIR%\capgenie.bat 
