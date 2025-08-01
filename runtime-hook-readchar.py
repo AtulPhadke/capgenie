@@ -176,12 +176,15 @@ def fix_readchar_metadata():
             print("[OK] Readchar distribution found")
         except pkg_resources.DistributionNotFound:
             print("[WARN] Readchar distribution not found, creating dummy...")
-            # Create a dummy distribution
+            # Create a dummy distribution that properly implements the interface
             class DummyDistribution:
                 def __init__(self):
                     self.project_name = 'readchar'
                     self.version = '1.0.0'
                     self.location = os.path.dirname(__file__)
+                    self.insert_on = []  # Required by pkg_resources
+                    self.key = 'readchar'  # Required by pkg_resources
+                    self._dep_map = {}  # Required by pkg_resources
 
                 def has_metadata(self, name):
                     return False
@@ -189,11 +192,22 @@ def fix_readchar_metadata():
                 def get_metadata(self, name):
                     return ''
 
+                def requires(self, extras=None):
+                    return []
+
+                def activate(self, path=None):
+                    pass
+
+                def as_requirement(self):
+                    return f"{self.project_name}=={self.version}"
+
             # Register the dummy distribution
             pkg_resources.working_set.add(DummyDistribution())
             print("[OK] Dummy readchar distribution created")
     except ImportError as e:
         print(f"[WARN] Could not import pkg_resources: {e}")
+    except Exception as e:
+        print(f"[WARN] Error creating dummy distribution: {e}")
 
 # Apply all fixes
 print("=== Applying Runtime Hook Fixes ===")
