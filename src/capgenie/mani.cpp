@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 namespace py = pybind11;
 namespace fs = std::filesystem;

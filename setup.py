@@ -25,6 +25,15 @@ class CustomBuildExt(build_ext):
                 self.compiler.compiler_so = ['cl.exe']
             if not hasattr(self.compiler, 'compiler_cxx'):
                 self.compiler.compiler_cxx = ['cl.exe']
+            
+            # Add Windows-specific defines for better compatibility
+            if not hasattr(ext, 'define_macros'):
+                ext.define_macros = []
+            ext.define_macros.extend([
+                ('_WIN32_WINNT', '0x0601'),
+                ('WIN32_LEAN_AND_MEAN', None),
+                ('_CRT_SECURE_NO_WARNINGS', None),
+            ])
         
         super().build_extension(ext)
 
@@ -44,8 +53,8 @@ def get_platform_flags():
         link_args = [f"-L{python_libdir}"] if python_libdir else []
         print(f"macOS flags: compile={compile_args}, link={link_args}")
     elif system == "Windows":  # Windows
-        # Windows-specific compilation flags
-        compile_args = ["/std:c++17", "/EHsc", "/MD", "/D_CRT_SECURE_NO_WARNINGS"]
+        # Windows-specific compilation flags - use MT for static linking with PyInstaller
+        compile_args = ["/std:c++17", "/EHsc", "/MT", "/D_CRT_SECURE_NO_WARNINGS", "/D_WIN32_WINNT=0x0601"]
         link_args = []
         if python_libdir:
             link_args.append(f"/LIBPATH:{python_libdir}")
