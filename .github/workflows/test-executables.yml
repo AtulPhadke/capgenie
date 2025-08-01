@@ -112,7 +112,8 @@ jobs:
     - name: Check executable size
       run: |
         echo "Executable size:"
-        for %%A in ("dist\cli.exe") do echo %%~zA bytes
+        $size = (Get-Item "dist\cli.exe").Length
+        echo "$size bytes"
 
     - name: Upload Windows executable
       uses: actions/upload-artifact@v4
@@ -131,7 +132,8 @@ jobs:
         echo ## Executable Information >> windows-test-summary.md
         echo - **Platform:** Windows >> windows-test-summary.md
         echo - **Architecture:** x64 >> windows-test-summary.md
-        for %%A in ("dist\cli.exe") do echo - **Size:** %%~zA bytes >> windows-test-summary.md
+        $size = (Get-Item "dist\cli.exe").Length
+        echo "- **Size:** $size bytes" >> windows-test-summary.md
         echo. >> windows-test-summary.md
         echo ## Test Results >> windows-test-summary.md
         echo - ✅ Help command works >> windows-test-summary.md
