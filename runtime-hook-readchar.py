@@ -50,14 +50,14 @@ def fix_python_dll_loading():
                     print(f"DLL integrity check: {message}")
                     if is_valid:
                         ctypes.PyDLL(current_dll)
-                        print(f"✓ Successfully loaded {python_dll_name} from current directory")
+                        print(f"[OK] Successfully loaded {python_dll_name} from current directory")
                         return
                     else:
-                        print(f"✗ DLL integrity check failed: {message}")
+                        print(f"[FAIL] DLL integrity check failed: {message}")
                 else:
-                    print(f"✗ DLL not found in current directory: {current_dll}")
+                    print(f"[FAIL] DLL not found in current directory: {current_dll}")
             except OSError as e:
-                print(f"✗ Failed to load from current directory: {e}")
+                print(f"[FAIL] Failed to load from current directory: {e}")
             
             # Method 2: Try to load from Python installation directory
             if python_dir:
@@ -69,14 +69,14 @@ def fix_python_dll_loading():
                         print(f"DLL integrity check: {message}")
                         if is_valid:
                             ctypes.PyDLL(dll_path)
-                            print(f"✓ Successfully loaded {python_dll_name} from Python directory")
+                            print(f"[OK] Successfully loaded {python_dll_name} from Python directory")
                             return
                         else:
-                            print(f"✗ DLL integrity check failed: {message}")
+                            print(f"[FAIL] DLL integrity check failed: {message}")
                     else:
-                        print(f"✗ DLL not found at: {dll_path}")
+                        print(f"[FAIL] DLL not found at: {dll_path}")
                 except OSError as e:
-                    print(f"✗ Failed to load from Python directory: {e}")
+                    print(f"[FAIL] Failed to load from Python directory: {e}")
             
             # Method 3: Try to load from _MEIPASS (PyInstaller bundle)
             if hasattr(sys, '_MEIPASS'):
@@ -88,14 +88,14 @@ def fix_python_dll_loading():
                         print(f"DLL integrity check: {message}")
                         if is_valid:
                             ctypes.PyDLL(dll_path)
-                            print(f"✓ Successfully loaded {python_dll_name} from _MEIPASS")
+                            print(f"[OK] Successfully loaded {python_dll_name} from _MEIPASS")
                             return
                         else:
-                            print(f"✗ DLL integrity check failed: {message}")
+                            print(f"[FAIL] DLL integrity check failed: {message}")
                     else:
-                        print(f"✗ DLL not found in _MEIPASS: {dll_path}")
+                        print(f"[FAIL] DLL not found in _MEIPASS: {dll_path}")
                 except OSError as e:
-                    print(f"✗ Failed to load from _MEIPASS: {e}")
+                    print(f"[FAIL] Failed to load from _MEIPASS: {e}")
             
             # Method 4: Try to load from Windows System32
             try:
@@ -106,38 +106,38 @@ def fix_python_dll_loading():
                     print(f"DLL integrity check: {message}")
                     if is_valid:
                         ctypes.PyDLL(system32_path)
-                        print(f"✓ Successfully loaded {python_dll_name} from System32")
+                        print(f"[OK] Successfully loaded {python_dll_name} from System32")
                         return
                     else:
-                        print(f"✗ DLL integrity check failed: {message}")
+                        print(f"[FAIL] DLL integrity check failed: {message}")
                 else:
-                    print(f"✗ DLL not found in System32: {system32_path}")
+                    print(f"[FAIL] DLL not found in System32: {system32_path}")
             except OSError as e:
-                print(f"✗ Failed to load from System32: {e}")
+                print(f"[FAIL] Failed to load from System32: {e}")
             
             # Method 5: Try to load from system PATH
             try:
                 print("Trying to load from system PATH...")
                 ctypes.PyDLL(python_dll_name)
-                print(f"✓ Successfully loaded {python_dll_name} from system PATH")
+                print(f"[OK] Successfully loaded {python_dll_name} from system PATH")
                 return
             except OSError as e:
-                print(f"✗ Failed to load from system PATH: {e}")
+                print(f"[FAIL] Failed to load from system PATH: {e}")
             
             # Method 6: Fallback - try to load the DLL that Python is currently using
             try:
                 print("Trying fallback method (load current Python DLL)...")
                 ctypes.PyDLL(None)  # This loads the DLL that Python is currently using
-                print("✓ Successfully loaded Python DLL using fallback method")
+                print("[OK] Successfully loaded Python DLL using fallback method")
                 return
             except OSError as e:
-                print(f"✗ Failed fallback method: {e}")
+                print(f"[FAIL] Failed fallback method: {e}")
                 
-            print(f"⚠ Warning: Could not load {python_dll_name} using any method")
+            print(f"[WARN] Warning: Could not load {python_dll_name} using any method")
             print("This may cause issues with C++ extensions")
             
         except Exception as e:
-            print(f"❌ Error during Python DLL loading: {e}")
+            print(f"[ERROR] Error during Python DLL loading: {e}")
 
 def fix_path_for_pyinstaller():
     """Fix PATH issues for PyInstaller"""
@@ -148,11 +148,11 @@ def fix_path_for_pyinstaller():
         current_path = os.environ.get('PATH', '')
         if bundle_dir not in current_path:
             os.environ['PATH'] = f"{bundle_dir};{current_path}"
-            print(f"✓ Added {bundle_dir} to PATH")
+            print(f"[OK] Added {bundle_dir} to PATH")
         else:
-            print(f"✓ {bundle_dir} already in PATH")
+            print(f"[OK] {bundle_dir} already in PATH")
     else:
-        print("⚠ No _MEIPASS found (not running in PyInstaller bundle)")
+        print("[WARN] No _MEIPASS found (not running in PyInstaller bundle)")
 
 def fix_readchar_metadata():
     """Fix readchar metadata issue"""
@@ -162,20 +162,20 @@ def fix_readchar_metadata():
         readchar_path = os.path.dirname(readchar.__file__)
         if readchar_path not in sys.path:
             sys.path.insert(0, readchar_path)
-            print(f"✓ Added readchar path to sys.path: {readchar_path}")
+            print(f"[OK] Added readchar path to sys.path: {readchar_path}")
         else:
-            print(f"✓ Readchar path already in sys.path: {readchar_path}")
+            print(f"[OK] Readchar path already in sys.path: {readchar_path}")
     except ImportError as e:
-        print(f"⚠ Could not import readchar: {e}")
+        print(f"[WARN] Could not import readchar: {e}")
 
     # Create a dummy metadata for readchar if it doesn't exist
     try:
         import pkg_resources
         try:
             pkg_resources.get_distribution('readchar')
-            print("✓ Readchar distribution found")
+            print("[OK] Readchar distribution found")
         except pkg_resources.DistributionNotFound:
-            print("⚠ Readchar distribution not found, creating dummy...")
+            print("[WARN] Readchar distribution not found, creating dummy...")
             # Create a dummy distribution
             class DummyDistribution:
                 def __init__(self):
@@ -191,9 +191,9 @@ def fix_readchar_metadata():
 
             # Register the dummy distribution
             pkg_resources.working_set.add(DummyDistribution())
-            print("✓ Dummy readchar distribution created")
+            print("[OK] Dummy readchar distribution created")
     except ImportError as e:
-        print(f"⚠ Could not import pkg_resources: {e}")
+        print(f"[WARN] Could not import pkg_resources: {e}")
 
 # Apply all fixes
 print("=== Applying Runtime Hook Fixes ===")
