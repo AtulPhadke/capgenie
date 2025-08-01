@@ -191,8 +191,12 @@ class search_aav9:
         for end_pos, pattern in automaton.iter(dna_seq):
             counts[pattern] += 1
 
-        sorted_count = dict(sorted(counts.items(), key=lambda item: item[1], reverse=True))
+        # Ensure all peptides are present, fill missing with 0
+        for pattern in peptide_map.keys():
+            if pattern not in counts:
+                counts[pattern] = 0
 
+        sorted_count = dict(sorted(counts.items(), key=lambda item: item[1], reverse=True))
         sorted_count = {peptide_map[k]:v for k,v in sorted_count.items()}
 
         self.add_decimal(sorted_count, os.path.join(new_path, f"variants_{os.path.basename(fastq_file.replace('.fastq', ''))}.pkl"))
@@ -340,11 +344,12 @@ class search_aav9:
     """
     def add_decimal(self, data_dict, file, merc=False):
         df = pd.DataFrame(list(data_dict.items()), columns=["Peptide", "Count"])
-        
-        df["Decimal"] = df["Count"]/df["Count"].sum()
-
-        df = df[df["Decimal"] > 0.0001]
-
+        total = df["Count"].sum()
+        if total == 0:
+            df["Decimal"] = 0.0
+        else:
+            df["Decimal"] = df["Count"] / total
+        # Do not filter out zeros, keep all peptides
         if merc:
             df["Peptide"] = df["Peptide"].apply(self.translate)
         df.to_pickle(file)

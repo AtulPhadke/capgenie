@@ -26,6 +26,14 @@ class spreadsheet:
 
         if not avg_file:
             df = pd.read_pickle(os.path.join(pkl_file_path, data_directory, f"{file_ext}{file}").replace(".fastq", ".pkl"))
+            # Ensure all expected peptides are present, fill missing with 0
+            if "Peptide" in df.columns and "Count" in df.columns:
+                all_peptides = df["Peptide"].unique().tolist()
+                df = df.set_index("Peptide")
+                for peptide in all_peptides:
+                    if peptide not in df.index:
+                        df.loc[peptide] = {"Count": 0, "Decimal": 0.0}
+                df = df.reset_index()
             df.to_excel(os.path.join(self.sheets_dir, data_directory, f"{file_ext}{file}").replace(".fastq", ".xlsx"))
         else:
             df = pd.read_pickle(os.path.join(pkl_file_path, data_directory, file).replace(".fastq", ".pkl"))

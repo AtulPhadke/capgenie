@@ -47,6 +47,7 @@ parser.add_argument("-w", "--weighted", action="store_true")
 parser.add_argument("-qual", "--quality_threshold", help="Quality threshold for denoising fastq files", default=False)
 parser.add_argument("-cls", "--clear_cache", help="This option clears all cache", action="store_true")
 parser.add_argument("-ses", "--session", help="DESKTOP: overrides the session name so no command utility is asked")
+parser.add_argument("-mot", "--motif", help="Find motifs in capsid file", action="store_true")
 
 class color:
    PURPLE = '\033[95m'
@@ -74,6 +75,7 @@ class cap_genie:
         self.bubble = self.args.bubble
         self.freq_distribution = self.args.freq_distribution
         self.session_name = self.args.session
+        self.run_motif = self.args.motif
 
         if self.args.clear_cache:
             mani.clear_cache_folder()
@@ -89,9 +91,11 @@ class cap_genie:
             if self.unknown_variants:
                 self.flanks = [self.args.flank1, self.args.flank2]
             elif self.capsid_file:
-
-                self.mismatches = int(self.args.mismatches)
-                self.mismatch_type = self.args.mtype
+                if self.args.mismatches:
+                    self.mismatches = int(self.args.mismatches)
+                    self.mismatch_type = self.args.mtype
+                else:
+                    self.mismatches = 0
             self.known_variants = not self.unknown_variants
 
         self.SEPERATOR = "----------------------------------------"
@@ -202,13 +206,15 @@ class cap_genie:
             print("Here's the capsid file imported: ")
             mani.pprint_csv(self.capsid_file)
             #input("Press enter to run pipeline: ")
-            print(color.BOLD + "Finding Motifs" + color.END)
-            save_dir = os.path.join(instance._cache_folder, instance._save_dir)
-            motif = Motif(list(peptide_map.values()), True)
-            motif.get_motifs(save_dir)
-            print(color.BOLD + "Creating Motif Logo" + color.END)
-            motif.createMotifLogo(f"{save_dir}")
-            print(f"Motif Logo saved to: {save_dir}")
+            print(self.run_motif)
+            if self.run_motif:
+                print(color.BOLD + "Finding Motifs" + color.END)
+                save_dir = os.path.join(instance._cache_folder, instance._save_dir)
+                motif = Motif(list(peptide_map.values()), True)
+                motif.get_motifs(save_dir)
+                print(color.BOLD + "Creating Motif Logo" + color.END)
+                motif.createMotifLogo(f"{save_dir}")
+                print(f"Motif Logo saved to: {save_dir}")
             print(color.BOLD + "Searching for known reads" + color.END)
 
         else:
