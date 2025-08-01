@@ -3,6 +3,7 @@ import sys
 import os
 import ctypes
 from ctypes import wintypes
+import traceback
 
 def verify_dll_integrity(dll_path):
     """Verify that a DLL file is not corrupted"""
@@ -138,21 +139,26 @@ def fix_python_dll_loading():
             
         except Exception as e:
             print(f"[ERROR] Error during Python DLL loading: {e}")
+            print(f"[ERROR] Traceback: {traceback.format_exc()}")
 
 def fix_path_for_pyinstaller():
     """Fix PATH issues for PyInstaller"""
     print("=== PATH Fix ===")
-    if hasattr(sys, '_MEIPASS'):
-        # Add PyInstaller bundle directory to PATH
-        bundle_dir = sys._MEIPASS
-        current_path = os.environ.get('PATH', '')
-        if bundle_dir not in current_path:
-            os.environ['PATH'] = f"{bundle_dir};{current_path}"
-            print(f"[OK] Added {bundle_dir} to PATH")
+    try:
+        if hasattr(sys, '_MEIPASS'):
+            # Add PyInstaller bundle directory to PATH
+            bundle_dir = sys._MEIPASS
+            current_path = os.environ.get('PATH', '')
+            if bundle_dir not in current_path:
+                os.environ['PATH'] = f"{bundle_dir};{current_path}"
+                print(f"[OK] Added {bundle_dir} to PATH")
+            else:
+                print(f"[OK] {bundle_dir} already in PATH")
         else:
-            print(f"[OK] {bundle_dir} already in PATH")
-    else:
-        print("[WARN] No _MEIPASS found (not running in PyInstaller bundle)")
+            print("[WARN] No _MEIPASS found (not running in PyInstaller bundle)")
+    except Exception as e:
+        print(f"[ERROR] Error during PATH fix: {e}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
 
 def fix_readchar_metadata():
     """Fix readchar metadata issue"""
@@ -208,10 +214,46 @@ def fix_readchar_metadata():
         print(f"[WARN] Could not import pkg_resources: {e}")
     except Exception as e:
         print(f"[WARN] Error creating dummy distribution: {e}")
+        print(f"[WARN] Traceback: {traceback.format_exc()}")
 
-# Apply all fixes
+def test_capgenie_imports():
+    """Test if CapGenie modules can be imported successfully"""
+    print("=== Testing CapGenie Imports ===")
+    try:
+        # Test importing the main CLI module
+        import capgenie.cli
+        print("[OK] Successfully imported capgenie.cli")
+        
+        # Test importing C++ extensions
+        import capgenie.denoise
+        print("[OK] Successfully imported capgenie.denoise")
+        
+        import capgenie.fuzzy_match
+        print("[OK] Successfully imported capgenie.fuzzy_match")
+        
+        import capgenie.mani
+        print("[OK] Successfully imported capgenie.mani")
+        
+        import capgenie.filter_module
+        print("[OK] Successfully imported capgenie.filter_module")
+        
+        print("[OK] All CapGenie modules imported successfully")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to import CapGenie modules: {e}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return False
+
+# Apply all fixes with comprehensive error handling
 print("=== Applying Runtime Hook Fixes ===")
-fix_python_dll_loading()
-fix_path_for_pyinstaller()
-fix_readchar_metadata()
-print("=== Runtime Hook Fixes Applied ===") 
+try:
+    fix_python_dll_loading()
+    fix_path_for_pyinstaller()
+    fix_readchar_metadata()
+    test_capgenie_imports()
+    print("=== Runtime Hook Fixes Applied Successfully ===")
+except Exception as e:
+    print(f"[CRITICAL ERROR] Runtime hook failed: {e}")
+    print(f"[CRITICAL ERROR] Traceback: {traceback.format_exc()}")
+    # Don't raise the exception - let the application continue
+    print("[CRITICAL ERROR] Continuing despite runtime hook failure...") 
