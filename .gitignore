@@ -21,6 +21,9 @@
 !build-all-executables.sh
 !EXECUTABLE_BUILD_README.md
 !runtime-hook-readchar.py
+!QUICK_FIX_WINDOWS.md
+!WINDOWS_BUILD_TROUBLESHOOTING.md
+!test_windows_build.py
 
 # Ignore everything else in src except capgenie
 src/*
