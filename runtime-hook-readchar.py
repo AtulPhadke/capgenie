@@ -4,21 +4,26 @@ import os
 
 # Fix Python DLL loading issues on Windows
 if sys.platform.startswith('win'):
-    # Ensure Python DLL is properly loaded
-    try:
-        import ctypes
-        # Get the Python DLL handle
-        python_dll = ctypes.PyDLL(None)
-    except Exception as e:
-        print(f"Warning: Could not load Python DLL: {e}")
-    
     # Set DLL search path to include the executable directory
-    try:
-        if hasattr(sys, '_MEIPASS'):
-            # We're running from PyInstaller
-            os.environ['PATH'] = sys._MEIPASS + os.pathsep + os.environ.get('PATH', '')
-    except Exception as e:
-        print(f"Warning: Could not set DLL search path: {e}")
+    if hasattr(sys, '_MEIPASS'):
+        # We're running from PyInstaller
+        os.environ['PATH'] = sys._MEIPASS + os.pathsep + os.environ.get('PATH', '')
+        
+        # Try to ensure Python DLL is available
+        try:
+            import ctypes
+            # This should work if Python DLL is in PATH
+            ctypes.PyDLL(None)
+        except Exception as e:
+            print(f"Warning: Could not load Python DLL: {e}")
+            # Try alternative approach - load from system
+            try:
+                import sys
+                python_dll_name = f'python{sys.version_info.major}{sys.version_info.minor}.dll'
+                ctypes.CDLL(python_dll_name)
+                print(f"Loaded Python DLL: {python_dll_name}")
+            except Exception as e2:
+                print(f"Warning: Could not load Python DLL from system: {e2}")
 
 # Add the readchar package to the path
 try:
