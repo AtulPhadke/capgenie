@@ -32,8 +32,27 @@ echo Building C++ extensions...
 python setup.py build_ext --inplace
 
 REM Build the executable with optimizations for speed
-echo Building executable with PyInstaller (using spec file for better DLL handling)...
-pyinstaller --clean capgenie.spec
+echo Building executable with PyInstaller (optimized for startup speed)...
+pyinstaller --clean ^
+    --hidden-import=inquirer ^
+    --hidden-import=readchar ^
+    --hidden-import=capgenie.denoise ^
+    --hidden-import=capgenie.fuzzy_match ^
+    --hidden-import=capgenie.mani ^
+    --hidden-import=capgenie.filter_module ^
+    --copy-metadata readchar ^
+    --onedir ^
+    --strip ^
+    --optimize=2 ^
+    --runtime-hook runtime-hook-readchar.py ^
+    --exclude-module matplotlib.tests ^
+    --exclude-module numpy.random.tests ^
+    --exclude-module scipy.tests ^
+    --exclude-module sklearn.tests ^
+    --exclude-module Bio.tests ^
+    --exclude-module plotly.tests ^
+    --collect-all capgenie ^
+    src/capgenie/cli.py
 
 REM Check if build succeeded
 if exist "%DIST_DIR%\cli\cli.exe" (
