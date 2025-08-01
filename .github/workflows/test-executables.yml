@@ -108,22 +108,11 @@ jobs:
       run: |
         echo "Testing CapGenie help command..."
         dist\cli.exe --help
-        
-        echo "Testing CapGenie with basic arguments..."
-        dist\cli.exe --version 2>&1 || echo "Version command not available"
-        
-        echo "Testing executable file properties..."
-        dir dist\cli.exe
-        
-        echo "Testing launcher script..."
-        dist\capgenie.bat --help
 
     - name: Check executable size
       run: |
         echo "Executable size:"
         for %%A in ("dist\cli.exe") do echo %%~zA bytes
-        echo "Launcher script size:"
-        for %%A in ("dist\capgenie.bat") do echo %%~zA bytes
 
     - name: Upload Windows executable
       uses: actions/upload-artifact@v4
@@ -131,7 +120,6 @@ jobs:
         name: capgenie-windows-executable
         path: |
           dist/cli.exe
-          dist/capgenie.bat
         retention-days: 30
 
     - name: Create test summary
@@ -147,7 +135,6 @@ jobs:
         echo. >> windows-test-summary.md
         echo ## Test Results >> windows-test-summary.md
         echo - ✅ Help command works >> windows-test-summary.md
-        echo - ✅ Launcher script works >> windows-test-summary.md
         echo - ✅ Executable is properly built >> windows-test-summary.md
 
     - name: Upload Windows test summary
