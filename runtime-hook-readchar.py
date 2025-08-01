@@ -174,47 +174,14 @@ def fix_readchar_metadata():
     except ImportError as e:
         print(f"[WARN] Could not import readchar: {e}")
 
-    # Create a dummy metadata for readchar if it doesn't exist
+    # Simple approach: just ensure readchar is importable
+    # Don't try to create dummy distributions as it can cause issues
     try:
-        import pkg_resources
-        try:
-            pkg_resources.get_distribution('readchar')
-            print("[OK] Readchar distribution found")
-        except pkg_resources.DistributionNotFound:
-            print("[WARN] Readchar distribution not found, creating dummy...")
-            # Create a dummy distribution that properly implements the interface
-            class DummyDistribution:
-                def __init__(self):
-                    self.project_name = 'readchar'
-                    self.version = '1.0.0'
-                    self.location = os.path.dirname(__file__)
-                    self.insert_on = []  # Required by pkg_resources
-                    self.key = 'readchar'  # Required by pkg_resources
-                    self._dep_map = {}  # Required by pkg_resources
-
-                def has_metadata(self, name):
-                    return False
-
-                def get_metadata(self, name):
-                    return ''
-
-                def requires(self, extras=None):
-                    return []
-
-                def activate(self, path=None):
-                    pass
-
-                def as_requirement(self):
-                    return f"{self.project_name}=={self.version}"
-
-            # Register the dummy distribution
-            pkg_resources.working_set.add(DummyDistribution())
-            print("[OK] Dummy readchar distribution created")
-    except ImportError as e:
-        print(f"[WARN] Could not import pkg_resources: {e}")
+        import readchar
+        print("[OK] Readchar is importable")
     except Exception as e:
-        print(f"[WARN] Error creating dummy distribution: {e}")
-        print(f"[WARN] Traceback: {traceback.format_exc()}")
+        print(f"[WARN] Readchar import issue: {e}")
+        print("[WARN] This may not affect functionality")
 
 def test_capgenie_imports():
     """Test if CapGenie modules can be imported successfully"""
