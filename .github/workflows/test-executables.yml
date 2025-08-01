@@ -34,14 +34,14 @@ jobs:
     - name: Test macOS executable
       run: |
         echo "Testing CapGenie help command..."
-        ./dist/capgenie --help
+        ./dist/cli --help
         
         echo "Testing CapGenie with basic arguments..."
-        ./dist/capgenie --version 2>&1 || echo "Version command not available"
+        ./dist/cli --version 2>&1 || echo "Version command not available"
         
         echo "Testing executable file properties..."
-        file ./dist/capgenie
-        ls -la ./dist/capgenie
+        file ./dist/cli
+        ls -la ./dist/cli
         
         echo "Testing launcher script..."
         ./dist/capgenie.sh --help
@@ -49,7 +49,7 @@ jobs:
     - name: Check executable size
       run: |
         echo "Executable size:"
-        du -sh ./dist/capgenie
+        du -sh ./dist/cli
         echo "Launcher script size:"
         du -sh ./dist/capgenie.sh
 
@@ -58,7 +58,7 @@ jobs:
       with:
         name: capgenie-macos-executable
         path: |
-          dist/capgenie
+          dist/cli
           dist/capgenie.sh
         retention-days: 30
 
@@ -71,8 +71,8 @@ jobs:
         echo "## Executable Information" >> macos-test-summary.md
         echo "- **Platform:** macOS" >> macos-test-summary.md
         echo "- **Architecture:** $(uname -m)" >> macos-test-summary.md
-        echo "- **Size:** $(du -sh ./dist/capgenie | cut -f1)" >> macos-test-summary.md
-        echo "- **File Type:** $(file ./dist/capgenie | cut -d: -f2)" >> macos-test-summary.md
+        echo "- **Size:** $(du -sh ./dist/cli | cut -f1)" >> macos-test-summary.md
+        echo "- **File Type:** $(file ./dist/cli | cut -d: -f2)" >> macos-test-summary.md
         echo "" >> macos-test-summary.md
         echo "## Test Results" >> macos-test-summary.md
         echo "- ✅ Help command works" >> macos-test-summary.md
@@ -107,13 +107,13 @@ jobs:
     - name: Test Windows executable
       run: |
         echo "Testing CapGenie help command..."
-        dist\capgenie.exe --help
+        dist\cli.exe --help
         
         echo "Testing CapGenie with basic arguments..."
-        dist\capgenie.exe --version 2>&1 || echo "Version command not available"
+        dist\cli.exe --version 2>&1 || echo "Version command not available"
         
         echo "Testing executable file properties..."
-        dir dist\capgenie.exe
+        dir dist\cli.exe
         
         echo "Testing launcher script..."
         dist\capgenie.bat --help
@@ -121,7 +121,7 @@ jobs:
     - name: Check executable size
       run: |
         echo "Executable size:"
-        for %%A in ("dist\capgenie.exe") do echo %%~zA bytes
+        for %%A in ("dist\cli.exe") do echo %%~zA bytes
         echo "Launcher script size:"
         for %%A in ("dist\capgenie.bat") do echo %%~zA bytes
 
@@ -130,7 +130,7 @@ jobs:
       with:
         name: capgenie-windows-executable
         path: |
-          dist/capgenie.exe
+          dist/cli.exe
           dist/capgenie.bat
         retention-days: 30
 
@@ -143,7 +143,7 @@ jobs:
         echo ## Executable Information >> windows-test-summary.md
         echo - **Platform:** Windows >> windows-test-summary.md
         echo - **Architecture:** x64 >> windows-test-summary.md
-        for %%A in ("dist\capgenie.exe") do echo - **Size:** %%~zA bytes >> windows-test-summary.md
+        for %%A in ("dist\cli.exe") do echo - **Size:** %%~zA bytes >> windows-test-summary.md
         echo. >> windows-test-summary.md
         echo ## Test Results >> windows-test-summary.md
         echo - ✅ Help command works >> windows-test-summary.md
