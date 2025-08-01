@@ -123,9 +123,9 @@ pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-met
 
 REM Test the executable
 echo [INFO] Testing the executable...
-if exist "%DIST_DIR%\capgenie.exe" (
+if exist "%DIST_DIR%\cli.exe" (
     echo Testing executable with --help...
-    "%DIST_DIR%\capgenie.exe" --help
+    "%DIST_DIR%\cli.exe" --help
     set EXIT_CODE=%errorlevel%
     echo Exit code: %EXIT_CODE%
     
@@ -139,21 +139,22 @@ if exist "%DIST_DIR%\capgenie.exe" (
     )
 ) else (
     echo ❌ Executable not found in dist directory
+    dir "%DIST_DIR%"
     exit /b 1
 )
 
 REM Calculate final size
-for %%A in ("%DIST_DIR%\capgenie.exe") do set FINAL_SIZE=%%~zA
+for %%A in ("%DIST_DIR%\cli.exe") do set FINAL_SIZE=%%~zA
 echo ✅ Executable created successfully!
 echo [INFO] Final size: %FINAL_SIZE% bytes
-echo [INFO] Location: %DIST_DIR%\capgenie.exe
+echo [INFO] Location: %DIST_DIR%\cli.exe
 
 REM Create a simple launcher script for easier integration
 echo [INFO] Creating launcher script...
 (
 echo @echo off
 echo set SCRIPT_DIR=%%~dp0
-echo "%SCRIPT_DIR%%capgenie.exe" %%*
+echo "%SCRIPT_DIR%%cli.exe" %%*
 ) > "%DIST_DIR%\capgenie.bat"
 
 echo 🎉 CapGenie executable for Windows is ready!

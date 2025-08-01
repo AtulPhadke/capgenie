@@ -151,9 +151,9 @@ pyinstaller --clean --hidden-import=inquirer --hidden-import=readchar --copy-met
 
 # Test the executable
 print_status "Testing the executable..."
-if [ -f "$DIST_DIR/capgenie" ]; then
+if [ -f "$DIST_DIR/cli" ]; then
     echo "Testing executable with --help..."
-    "$DIST_DIR/capgenie" --help
+    "$DIST_DIR/cli" --help
     EXIT_CODE=$?
     echo "Exit code: $EXIT_CODE"
     
@@ -165,21 +165,22 @@ if [ -f "$DIST_DIR/capgenie" ]; then
     fi
 else
     print_error "Executable not found in dist directory"
+    ls -la "$DIST_DIR"
     exit 1
 fi
 
 # Calculate final size
-FINAL_SIZE=$(du -sh "$DIST_DIR/capgenie" | cut -f1)
+FINAL_SIZE=$(du -sh "$DIST_DIR/cli" | cut -f1)
 print_success "Executable created successfully!"
 print_status "Final size: $FINAL_SIZE"
-print_status "Location: $DIST_DIR/capgenie"
+print_status "Location: $DIST_DIR/cli"
 
 # Create a simple launcher script for easier integration
 print_status "Creating launcher script..."
 cat > "$DIST_DIR/capgenie.sh" << 'EOF'
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$SCRIPT_DIR/capgenie" "$@"
+exec "$SCRIPT_DIR/cli" "$@"
 EOF
 chmod +x "$DIST_DIR/capgenie.sh"
 
