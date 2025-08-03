@@ -275,65 +275,8 @@ for exe in "$EXECUTABLES_DIR"/*; do
     fi
 done
 
-# Create a summary file
-print_status "Creating build summary..."
-cat > "$EXECUTABLES_DIR/build-summary.md" << EOF
-# CapGenie Executables Build Summary
-
-## Build Information
-- **Build Date:** $(date -u)
-- **Platform:** $(uname -s)
-- **Architecture:** $(uname -m)
-
-## Available Executables
-
-$(ls -la "$EXECUTABLES_DIR" | grep -v "^total" | while read line; do
-    echo "- $line"
-done)
-
-## Usage
-
-### macOS
-\`\`\`bash
-./capgenie-macos --help
-# or
-./capgenie-macos.sh --help
-\`\`\`
-
-### Windows
-\`\`\`cmd
-capgenie-windows.exe --help
-# or
-capgenie-windows.bat --help
-\`\`\`
-
-### Linux
-\`\`\`bash
-./capgenie-linux --help
-# or
-./capgenie-linux.sh --help
-\`\`\`
-
-## Integration with Electron
-
-Copy the appropriate executable to your Electron app's resources:
-
-\`\`\`javascript
-// In your Electron main process
-const path = require('path');
-const { app } = require('electron');
-
-const executablePath = path.join(
-  app.isPackaged ? process.resourcesPath : __dirname,
-  'executables',
-  process.platform === 'win32' ? 'capgenie-windows.exe' : 'capgenie-macos'
-);
-\`\`\`
-EOF
-
 print_success "🎉 All executables built successfully!"
 print_status "Executables are available in: $EXECUTABLES_DIR"
-print_status "Build summary: $EXECUTABLES_DIR/build-summary.md"
 print_status ""
 print_status "Next steps:"
 print_status "1. Copy the appropriate executable to your Electron app"

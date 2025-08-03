@@ -43,7 +43,7 @@ jobs:
           chmod +x build-executable-mac.sh
           ./build-executable-mac.sh
         else
-          .\build-executable-windows.bat
+          .\build-executable-windows-optimized.bat
         fi
 
     - name: Test executable
