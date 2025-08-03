@@ -91,6 +91,31 @@ pyinstaller --clean ^
     --exclude-module venv ^
     --exclude-module distutils ^
     --exclude-module setuptools ^
+    --exclude-module setuptools._distutils ^
+    --exclude-module setuptools._vendor ^
+    --exclude-module setuptools.command ^
+    --exclude-module setuptools.dist ^
+    --exclude-module setuptools.extension ^
+    --exclude-module setuptools.glob ^
+    --exclude-module setuptools.msvc ^
+    --exclude-module setuptools.namespaces ^
+    --exclude-module setuptools.package_index ^
+    --exclude-module setuptools.py27compat ^
+    --exclude-module setuptools.py31compat ^
+    --exclude-module setuptools.py33compat ^
+    --exclude-module setuptools.sandbox ^
+    --exclude-module setuptools.ssl_support ^
+    --exclude-module setuptools.unicode_utils ^
+    --exclude-module setuptools.wheel ^
+    --exclude-module setuptools.windows_support ^
+    --exclude-module pkg_resources ^
+    --exclude-module pkg_resources._vendor ^
+    --exclude-module pkg_resources.extern ^
+    --exclude-module pkg_resources.py2_warn ^
+    --exclude-module pkg_resources.py31compat ^
+    --exclude-module pkg_resources.py33compat ^
+    --exclude-module pkg_resources.safe_extra ^
+    --exclude-module pkg_resources.tests ^
     --exclude-module pip ^
     --exclude-module wheel ^
     --exclude-module email ^
@@ -98,52 +123,6 @@ pyinstaller --clean ^
     --exclude-module urllib ^
     --exclude-module xml ^
     --exclude-module xmlrpc ^
-    --exclude-module multiprocessing ^
-    --exclude-module concurrent ^
-    --exclude-module asyncio ^
-    --exclude-module ssl ^
-    --exclude-module socket ^
-    --exclude-module select ^
-    --exclude-module threading ^
-    --exclude-module queue ^
-    --exclude-module weakref ^
-    --exclude-module gc ^
-    --exclude-module runpy ^
-    --exclude-module zipimport ^
-    --exclude-module marshal ^
-    --exclude-module pickle ^
-    --exclude-module copyreg ^
-    --exclude-module struct ^
-    --exclude-module array ^
-    --exclude-module builtins ^
-    --exclude-module __future__ ^
-    --exclude-module warnings ^
-    --exclude-module linecache ^
-    --exclude-module inspect ^
-    --exclude-module ast ^
-    --exclude-module tokenize ^
-    --exclude-module token ^
-    --exclude-module codeop ^
-    --exclude-module code ^
-    --exclude-module dis ^
-    --exclude-module opcode ^
-    --exclude-module symtable ^
-    --exclude-module tabnanny ^
-    --exclude-module py_compile ^
-    --exclude-module compileall ^
-    --exclude-module pyclbr ^
-    --exclude-module filecmp ^
-    --exclude-module difflib ^
-    --exclude-module doctest ^
-    --exclude-module pydoc_data ^
-    --exclude-module pydoc ^
-    --exclude-module profile ^
-    --exclude-module pstats ^
-    --exclude-module cProfile ^
-    --exclude-module timeit ^
-    --exclude-module trace ^
-    --exclude-module tracemalloc ^
-    --exclude-module cgitb ^
     --exclude-module wsgiref ^
     --exclude-module urllib3 ^
     --exclude-module requests ^
@@ -175,32 +154,6 @@ pyinstaller --clean ^
     --exclude-module backports.statistics ^
     --exclude-module backports.weakref ^
     --exclude-module backports.zoneinfo ^
-    --exclude-module setuptools ^
-    --exclude-module setuptools._distutils ^
-    --exclude-module setuptools._vendor ^
-    --exclude-module setuptools.command ^
-    --exclude-module setuptools.dist ^
-    --exclude-module setuptools.extension ^
-    --exclude-module setuptools.glob ^
-    --exclude-module setuptools.msvc ^
-    --exclude-module setuptools.namespaces ^
-    --exclude-module setuptools.package_index ^
-    --exclude-module setuptools.py27compat ^
-    --exclude-module setuptools.py31compat ^
-    --exclude-module setuptools.py33compat ^
-    --exclude-module setuptools.sandbox ^
-    --exclude-module setuptools.ssl_support ^
-    --exclude-module setuptools.unicode_utils ^
-    --exclude-module setuptools.wheel ^
-    --exclude-module setuptools.windows_support ^
-    --exclude-module pkg_resources ^
-    --exclude-module pkg_resources._vendor ^
-    --exclude-module pkg_resources.extern ^
-    --exclude-module pkg_resources.py2_warn ^
-    --exclude-module pkg_resources.py31compat ^
-    --exclude-module pkg_resources.py33compat ^
-    --exclude-module pkg_resources.safe_extra ^
-    --exclude-module pkg_resources.tests ^
     --collect-all capgenie ^
     --add-data "src/capgenie;capgenie" ^
     --add-binary "python312.dll;." ^
