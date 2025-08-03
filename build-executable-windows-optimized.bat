@@ -39,13 +39,169 @@ REM Copy Python DLL to current directory to ensure it's available
 echo Copying Python DLL to current directory...
 python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); local_dll = 'python312.dll'; shutil.copy2(dll_path, local_dll) if os.path.exists(dll_path) else None; print('DLL copied to current directory:', os.path.exists(local_dll))"
 
-REM Build the executable with maximum optimizations
+REM Build the executable with maximum optimizations using direct PyInstaller commands
 echo Building executable with PyInstaller (maximum optimization)...
 pyinstaller --clean ^
-    --specpath . ^
-    capgenie-optimized.spec ^
+    --hidden-import=inquirer ^
+    --hidden-import=readchar ^
+    --hidden-import=capgenie.denoise ^
+    --hidden-import=capgenie.fuzzy_match ^
+    --hidden-import=capgenie.mani ^
+    --hidden-import=capgenie.filter_module ^
+    --copy-metadata readchar ^
+    --onedir ^
+    --optimize=2 ^
+    --runtime-hook runtime-hook-readchar.py ^
+    --additional-hooks-dir=. ^
+    --exclude-module matplotlib.tests ^
+    --exclude-module numpy.random.tests ^
+    --exclude-module scipy.tests ^
+    --exclude-module sklearn.tests ^
+    --exclude-module Bio.tests ^
+    --exclude-module plotly.tests ^
+    --exclude-module unittest ^
+    --exclude-module test ^
+    --exclude-module tests ^
+    --exclude-module _pytest ^
+    --exclude-module pytest ^
+    --exclude-module coverage ^
+    --exclude-module pdb ^
+    --exclude-module pydoc ^
+    --exclude-module tkinter ^
+    --exclude-module turtle ^
+    --exclude-module idlelib ^
+    --exclude-module lib2to3 ^
+    --exclude-module ensurepip ^
+    --exclude-module venv ^
+    --exclude-module distutils ^
+    --exclude-module setuptools ^
+    --exclude-module pip ^
+    --exclude-module wheel ^
+    --exclude-module email ^
+    --exclude-module http ^
+    --exclude-module urllib ^
+    --exclude-module xml ^
+    --exclude-module xmlrpc ^
+    --exclude-module multiprocessing ^
+    --exclude-module concurrent ^
+    --exclude-module asyncio ^
+    --exclude-module ssl ^
+    --exclude-module socket ^
+    --exclude-module select ^
+    --exclude-module threading ^
+    --exclude-module queue ^
+    --exclude-module weakref ^
+    --exclude-module gc ^
+    --exclude-module sysconfig ^
+    --exclude-module site ^
+    --exclude-module runpy ^
+    --exclude-module importlib ^
+    --exclude-module zipimport ^
+    --exclude-module marshal ^
+    --exclude-module pickle ^
+    --exclude-module copyreg ^
+    --exclude-module struct ^
+    --exclude-module array ^
+    --exclude-module collections ^
+    --exclude-module itertools ^
+    --exclude-module functools ^
+    --exclude-module operator ^
+    --exclude-module types ^
+    --exclude-module builtins ^
+    --exclude-module __future__ ^
+    --exclude-module warnings ^
+    --exclude-module traceback ^
+    --exclude-module linecache ^
+    --exclude-module inspect ^
+    --exclude-module ast ^
+    --exclude-module tokenize ^
+    --exclude-module token ^
+    --exclude-module keyword ^
+    --exclude-module codeop ^
+    --exclude-module code ^
+    --exclude-module dis ^
+    --exclude-module opcode ^
+    --exclude-module symtable ^
+    --exclude-module tabnanny ^
+    --exclude-module py_compile ^
+    --exclude-module compileall ^
+    --exclude-module pyclbr ^
+    --exclude-module filecmp ^
+    --exclude-module difflib ^
+    --exclude-module doctest ^
+    --exclude-module pydoc_data ^
+    --exclude-module pydoc ^
+    --exclude-module profile ^
+    --exclude-module pstats ^
+    --exclude-module cProfile ^
+    --exclude-module timeit ^
+    --exclude-module trace ^
+    --exclude-module tracemalloc ^
+    --exclude-module cgitb ^
+    --exclude-module wsgiref ^
+    --exclude-module urllib3 ^
+    --exclude-module requests ^
+    --exclude-module certifi ^
+    --exclude-module chardet ^
+    --exclude-module idna ^
+    --exclude-module charset_normalizer ^
+    --exclude-module packaging ^
+    --exclude-module pyparsing ^
+    --exclude-module six ^
+    --exclude-module appdirs ^
+    --exclude-module distlib ^
+    --exclude-module filelock ^
+    --exclude-module platformdirs ^
+    --exclude-module tomli ^
+    --exclude-module tomllib ^
+    --exclude-module typing_extensions ^
+    --exclude-module zipp ^
+    --exclude-module importlib_metadata ^
+    --exclude-module importlib_resources ^
+    --exclude-module pathlib2 ^
+    --exclude-module scandir ^
+    --exclude-module contextlib2 ^
+    --exclude-module configparser ^
+    --exclude-module configparser2 ^
+    --exclude-module backports ^
+    --exclude-module backports.entry_points_selectable ^
+    --exclude-module backports.functools_lru_cache ^
+    --exclude-module backports.shutil_get_terminal_size ^
+    --exclude-module backports.shutil_which ^
+    --exclude-module backports.statistics ^
+    --exclude-module backports.weakref ^
+    --exclude-module backports.zoneinfo ^
+    --exclude-module setuptools ^
+    --exclude-module setuptools._distutils ^
+    --exclude-module setuptools._vendor ^
+    --exclude-module setuptools.command ^
+    --exclude-module setuptools.dist ^
+    --exclude-module setuptools.extension ^
+    --exclude-module setuptools.glob ^
+    --exclude-module setuptools.msvc ^
+    --exclude-module setuptools.namespaces ^
+    --exclude-module setuptools.package_index ^
+    --exclude-module setuptools.py27compat ^
+    --exclude-module setuptools.py31compat ^
+    --exclude-module setuptools.py33compat ^
+    --exclude-module setuptools.sandbox ^
+    --exclude-module setuptools.ssl_support ^
+    --exclude-module setuptools.unicode_utils ^
+    --exclude-module setuptools.wheel ^
+    --exclude-module setuptools.windows_support ^
+    --exclude-module pkg_resources ^
+    --exclude-module pkg_resources._vendor ^
+    --exclude-module pkg_resources.extern ^
+    --exclude-module pkg_resources.py2_warn ^
+    --exclude-module pkg_resources.py31compat ^
+    --exclude-module pkg_resources.py33compat ^
+    --exclude-module pkg_resources.safe_extra ^
+    --exclude-module pkg_resources.tests ^
+    --collect-all capgenie ^
+    --add-data "src/capgenie;capgenie" ^
     --add-binary "python312.dll;." ^
-    --log-level WARN
+    --log-level WARN ^
+    src/capgenie/cli.py
 
 REM Check if build succeeded
 if exist "%DIST_DIR%\cli\cli.exe" (
@@ -86,7 +242,6 @@ echo Launcher script: %DIST_DIR%\capgenie.bat
 echo.
 echo Optimization features applied:
 echo - Aggressive module exclusion
-echo - UPX compression enabled
-echo - Binary stripping enabled
 echo - Optimized Python bytecode
-echo - Minimal dependencies included 
+echo - Minimal dependencies included
+echo - Reduced log verbosity 

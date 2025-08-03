@@ -22,7 +22,6 @@
 !EXECUTABLE_BUILD_README.md
 !OPTIMIZATION_README.md
 !runtime-hook-readchar.py
-!capgenie-optimized.spec
 
 # Ignore old build files we no longer use
 build-executable-windows.bat
