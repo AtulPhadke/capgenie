@@ -67,42 +67,6 @@ jobs:
           dist/${{ matrix.launcher-name }}
         retention-days: 30
 
-    - name: Create platform summary
-      run: |
-        if [ "${{ matrix.os }}" = "macos-latest" ]; then
-          echo "# ${{ matrix.platform }} Executable Summary" > ${{ matrix.platform }}-summary.md
-          echo "" >> ${{ matrix.platform }}-summary.md
-          echo "## Build Information" >> ${{ matrix.platform }}-summary.md
-          echo "- **Platform:** ${{ matrix.platform }}" >> ${{ matrix.platform }}-summary.md
-          echo "- **Architecture:** $(uname -m)" >> ${{ matrix.platform }}-summary.md
-          echo "- **Executable Size:** $(du -sh ./dist/${{ matrix.executable-name }} | cut -f1)" >> ${{ matrix.platform }}-summary.md
-          echo "- **File Type:** $(file ./dist/${{ matrix.executable-name }} | cut -d: -f2)" >> ${{ matrix.platform }}-summary.md
-          echo "" >> ${{ matrix.platform }}-summary.md
-          echo "## Test Results" >> ${{ matrix.platform }}-summary.md
-          echo "- ✅ Executable built successfully" >> ${{ matrix.platform }}-summary.md
-          echo "- ✅ Help command works" >> ${{ matrix.platform }}-summary.md
-          echo "- ✅ Launcher script works" >> ${{ matrix.platform }}-summary.md
-        else
-          echo # ${{ matrix.platform }} Executable Summary > ${{ matrix.platform }}-summary.md
-          echo. >> ${{ matrix.platform }}-summary.md
-          echo ## Build Information >> ${{ matrix.platform }}-summary.md
-          echo - **Platform:** ${{ matrix.platform }} >> ${{ matrix.platform }}-summary.md
-          echo - **Architecture:** x64 >> ${{ matrix.platform }}-summary.md
-          for %%A in ("dist\${{ matrix.executable-name }}") do echo - **Executable Size:** %%~zA bytes >> ${{ matrix.platform }}-summary.md
-          echo. >> ${{ matrix.platform }}-summary.md
-          echo ## Test Results >> ${{ matrix.platform }}-summary.md
-          echo - ✅ Executable built successfully >> ${{ matrix.platform }}-summary.md
-          echo - ✅ Help command works >> ${{ matrix.platform }}-summary.md
-          echo - ✅ Launcher script works >> ${{ matrix.platform }}-summary.md
-        fi
-
-    - name: Upload platform summary
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.platform }}-summary
-        path: ${{ matrix.platform }}-summary.md
-        retention-days: 30
-
   create-release:
     needs: build-executables
     runs-on: ubuntu-latest
@@ -210,69 +174,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: artifacts/capgenie-windows-executable/capgenie.bat
         asset_name: capgenie-windows-${{ github.ref_name }}.bat
-        asset_content_type: application/x-msdos-program
-
-    - name: Create comprehensive release summary
-      run: |
-        echo "# CapGenie Executables Release ${{ github.ref_name }}" > release-summary.md
-        echo "" >> release-summary.md
-        echo "## Build Information" >> release-summary.md
-        echo "- **Version:** ${{ github.ref_name }}" >> release-summary.md
-        echo "- **Build Date:** $(date -u)" >> release-summary.md
-        echo "- **Commit:** ${{ github.sha }}" >> release-summary.md
-        echo "" >> release-summary.md
-        echo "## Available Executables" >> release-summary.md
-        echo "" >> release-summary.md
-        echo "### macOS" >> release-summary.md
-        if [ -f "artifacts/capgenie-macos-executable/capgenie" ]; then
-          echo "- **Executable:** capgenie-macos-${{ github.ref_name }}" >> release-summary.md
-          echo "- **Size:** $(du -sh artifacts/capgenie-macos-executable/capgenie | cut -f1)" >> release-summary.md
-          echo "- **Type:** $(file artifacts/capgenie-macos-executable/capgenie | cut -d: -f2)" >> release-summary.md
-        else
-          echo "- **Status:** ❌ Not found" >> release-summary.md
-        fi
-        echo "" >> release-summary.md
-        echo "### Windows" >> release-summary.md
-        if [ -f "artifacts/capgenie-windows-executable/capgenie.exe" ]; then
-          echo "- **Executable:** capgenie-windows-${{ github.ref_name }}.exe" >> release-summary.md
-          echo "- **Size:** $(du -sh artifacts/capgenie-windows-executable/capgenie.exe | cut -f1)" >> release-summary.md
-          echo "- **Type:** Windows executable" >> release-summary.md
-        else
-          echo "- **Status:** ❌ Not found" >> release-summary.md
-        fi
-        echo "" >> release-summary.md
-        echo "## Integration Instructions" >> release-summary.md
-        echo "" >> release-summary.md
-        echo "### For Electron Applications:" >> release-summary.md
-        echo "1. Download the appropriate executable for your platform" >> release-summary.md
-        echo "2. Create a resources/executables/ directory in your Electron app" >> release-summary.md
-        echo "3. Copy the executable to this directory" >> release-summary.md
-        echo "4. Update your main.js to call the executable directly" >> release-summary.md
-        echo "5. Package with your Electron application" >> release-summary.md
-        echo "" >> release-summary.md
-        echo "### Example Integration Code:" >> release-summary.md
-        echo "\`\`\`javascript" >> release-summary.md
-        echo "const { spawn } = require('child_process');" >> release-summary.md
-        echo "const path = require('path');" >> release-summary.md
-        echo "const { app } = require('electron');" >> release-summary.md
-        echo "" >> release-summary.md
-        echo "function getCapGenieExecutable() {" >> release-summary.md
-        echo "  const executableDir = path.join(" >> release-summary.md
-        echo "    app.isPackaged ? process.resourcesPath : __dirname," >> release-summary.md
-        echo "    'resources', 'executables'" >> release-summary.md
-        echo "  );" >> release-summary.md
-        echo "  " >> release-summary.md
-        echo "  if (process.platform === 'win32') {" >> release-summary.md
-        echo "    return path.join(executableDir, 'capgenie-windows.exe');" >> release-summary.md
-        echo "  } else {" >> release-summary.md
-        echo "    return path.join(executableDir, 'capgenie-macos');" >> release-summary.md
-        echo "  }" >> release-summary.md
-        echo "}" >> release-summary.md
-        echo "\`\`\`" >> release-summary.md
-
-    - name: Upload release summary
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-summary
-        path: release-summary.md
-        retention-days: 30 
+        asset_content_type: application/x-msdos-program 

@@ -119,7 +119,6 @@ pyinstaller --clean ^
     --exclude-module struct ^
     --exclude-module array ^
     --exclude-module operator ^
-    --exclude-module types ^
     --exclude-module builtins ^
     --exclude-module __future__ ^
     --exclude-module warnings ^
@@ -245,7 +244,7 @@ echo "%SCRIPT_DIR%cli\cli.exe" %%*
 
 REM Calculate final size
 echo Calculating final executable size...
-python -c "import os; import glob; total_size = 0; for root, dirs, files in os.walk(r'%DIST_DIR%\cli'): total_size += sum(os.path.getsize(os.path.join(root, name)) for name in files); print(f'Total executable size: {total_size / (1024*1024):.2f} MB')"
+python -c "import os; total_size = 0; for root, dirs, files in os.walk(r'%DIST_DIR%\cli'): total_size += sum(os.path.getsize(os.path.join(root, name)) for name in files); print(f'Total executable size: {total_size / (1024*1024):.2f} MB')"
 
 echo Optimized build completed successfully!
 echo Executable location: %DIST_DIR%\cli\cli.exe
