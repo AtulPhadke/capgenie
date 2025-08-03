@@ -64,6 +64,19 @@ pyinstaller --clean ^
     --hidden-import=ahocorasick ^
     --hidden-import=Bio ^
     --hidden-import=Bio.Seq ^
+    --hidden-import=collections ^
+    --hidden-import=collections.abc ^
+    --hidden-import=collections.Counter ^
+    --hidden-import=collections.OrderedDict ^
+    --hidden-import=collections.defaultdict ^
+    --hidden-import=base64 ^
+    --hidden-import=random ^
+    --hidden-import=math ^
+    --hidden-import=dataclasses ^
+    --hidden-import=json ^
+    --hidden-import=shutil ^
+    --hidden-import=pickle ^
+    --hidden-import=warnings ^
     --copy-metadata readchar ^
     --onedir ^
     --optimize=2 ^
