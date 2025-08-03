@@ -108,10 +108,7 @@ pyinstaller --clean ^
     --exclude-module queue ^
     --exclude-module weakref ^
     --exclude-module gc ^
-    --exclude-module sysconfig ^
-    --exclude-module site ^
     --exclude-module runpy ^
-    --exclude-module importlib ^
     --exclude-module zipimport ^
     --exclude-module marshal ^
     --exclude-module pickle ^
@@ -127,7 +124,6 @@ pyinstaller --clean ^
     --exclude-module ast ^
     --exclude-module tokenize ^
     --exclude-module token ^
-    --exclude-module keyword ^
     --exclude-module codeop ^
     --exclude-module code ^
     --exclude-module dis ^
