@@ -115,7 +115,6 @@ pyinstaller --clean ^
     --exclude-module copyreg ^
     --exclude-module struct ^
     --exclude-module array ^
-    --exclude-module operator ^
     --exclude-module builtins ^
     --exclude-module __future__ ^
     --exclude-module warnings ^
