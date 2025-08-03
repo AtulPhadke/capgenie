@@ -48,6 +48,10 @@ pyinstaller --clean ^
     --hidden-import=capgenie.fuzzy_match ^
     --hidden-import=capgenie.mani ^
     --hidden-import=capgenie.filter_module ^
+    --hidden-import=matplotlib.pyplot ^
+    --hidden-import=plotly ^
+    --hidden-import=plotly.graph_objects ^
+    --hidden-import=plotly.express ^
     --copy-metadata readchar ^
     --onedir ^
     --optimize=2 ^
@@ -238,7 +242,8 @@ echo Executable location: %DIST_DIR%\cli\cli.exe
 echo Launcher script: %DIST_DIR%\capgenie.bat
 echo.
 echo Optimization features applied:
-echo - Aggressive module exclusion (keeping essential core modules)
+echo - Aggressive module exclusion (keeping essential modules)
+echo - matplotlib.pyplot and plotly included for functionality
 echo - Optimized Python bytecode
 echo - Minimal dependencies included
 echo - Reduced log verbosity 
