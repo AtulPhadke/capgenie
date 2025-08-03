@@ -122,7 +122,6 @@ pyinstaller --clean ^
     --exclude-module builtins ^
     --exclude-module __future__ ^
     --exclude-module warnings ^
-    --exclude-module traceback ^
     --exclude-module linecache ^
     --exclude-module inspect ^
     --exclude-module ast ^
@@ -244,8 +243,6 @@ echo "%SCRIPT_DIR%cli\cli.exe" %%*
 
 REM Calculate final size
 echo Calculating final executable size...
-python -c "import os; total_size = 0; for root, dirs, files in os.walk(r'%DIST_DIR%\cli'): total_size += sum(os.path.getsize(os.path.join(root, name)) for name in files); print(f'Total executable size: {total_size / (1024*1024):.2f} MB')"
-
 echo Optimized build completed successfully!
 echo Executable location: %DIST_DIR%\cli\cli.exe
 echo Launcher script: %DIST_DIR%\capgenie.bat
