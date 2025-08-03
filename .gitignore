@@ -17,10 +17,18 @@
 !.github/workflows/
 !.github/workflows/*.yml
 !build-executable-mac.sh
-!build-executable-windows.bat
+!build-executable-windows-optimized.bat
 !build-all-executables.sh
 !EXECUTABLE_BUILD_README.md
+!OPTIMIZATION_README.md
 !runtime-hook-readchar.py
+!capgenie-optimized.spec
+
+# Ignore old build files we no longer use
+build-executable-windows.bat
+build-executable-windows-simple.bat
+build-executable-windows-fixed.bat
+capgenie.spec
 
 # Ignore everything else in src except capgenie
 src/*
@@ -37,4 +45,10 @@ src/capgenie.egg-info/
 ~$*
 *.pyc
 __pycache__/
-*.so 
+*.so
+dist/
+*.exe
+*.dll
+*.pyd
+*.pyo
+*.log 
