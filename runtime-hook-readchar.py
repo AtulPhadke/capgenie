@@ -3,7 +3,6 @@ import sys
 import os
 import ctypes
 from ctypes import wintypes
-import traceback
 
 def verify_dll_integrity(dll_path):
     """Verify that a DLL file is not corrupted"""
@@ -139,7 +138,6 @@ def fix_python_dll_loading():
             
         except Exception as e:
             print(f"[ERROR] Error during Python DLL loading: {e}")
-            print(f"[ERROR] Traceback: {traceback.format_exc()}")
 
 def fix_path_for_pyinstaller():
     """Fix PATH issues for PyInstaller"""
@@ -158,7 +156,6 @@ def fix_path_for_pyinstaller():
             print("[WARN] No _MEIPASS found (not running in PyInstaller bundle)")
     except Exception as e:
         print(f"[ERROR] Error during PATH fix: {e}")
-        print(f"[ERROR] Traceback: {traceback.format_exc()}")
 
 def fix_readchar_metadata():
     """Fix readchar metadata issue"""
@@ -208,7 +205,6 @@ def test_capgenie_imports():
         return True
     except Exception as e:
         print(f"[ERROR] Failed to import CapGenie modules: {e}")
-        print(f"[ERROR] Traceback: {traceback.format_exc()}")
         return False
 
 # Apply all fixes with comprehensive error handling
@@ -221,6 +217,5 @@ try:
     print("=== Runtime Hook Fixes Applied Successfully ===")
 except Exception as e:
     print(f"[CRITICAL ERROR] Runtime hook failed: {e}")
-    print(f"[CRITICAL ERROR] Traceback: {traceback.format_exc()}")
     # Don't raise the exception - let the application continue
     print("[CRITICAL ERROR] Continuing despite runtime hook failure...") 
