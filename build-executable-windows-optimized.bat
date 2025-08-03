@@ -155,7 +155,6 @@ pyinstaller --clean ^
     --exclude-module platformdirs ^
     --exclude-module tomli ^
     --exclude-module tomllib ^
-    --exclude-module typing_extensions ^
     --exclude-module zipp ^
     --exclude-module importlib_metadata ^
     --exclude-module importlib_resources ^
