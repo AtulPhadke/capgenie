@@ -102,9 +102,6 @@ pyinstaller --clean ^
     --exclude-module copyreg ^
     --exclude-module struct ^
     --exclude-module array ^
-    --exclude-module collections ^
-    --exclude-module itertools ^
-    --exclude-module functools ^
     --exclude-module operator ^
     --exclude-module types ^
     --exclude-module builtins ^
@@ -241,7 +238,7 @@ echo Executable location: %DIST_DIR%\cli\cli.exe
 echo Launcher script: %DIST_DIR%\capgenie.bat
 echo.
 echo Optimization features applied:
-echo - Aggressive module exclusion
+echo - Aggressive module exclusion (keeping essential core modules)
 echo - Optimized Python bytecode
 echo - Minimal dependencies included
 echo - Reduced log verbosity 
