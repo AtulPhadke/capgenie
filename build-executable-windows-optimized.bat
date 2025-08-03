@@ -39,8 +39,8 @@ REM Copy Python DLL to current directory to ensure it's available
 echo Copying Python DLL to current directory...
 python -c "import sys; import os; import shutil; python_dir = os.path.dirname(sys.executable); dll_path = os.path.join(python_dir, 'python312.dll'); local_dll = 'python312.dll'; shutil.copy2(dll_path, local_dll) if os.path.exists(dll_path) else None; print('DLL copied to current directory:', os.path.exists(local_dll))"
 
-REM Build the executable with maximum optimizations using direct PyInstaller commands
-echo Building executable with PyInstaller (maximum optimization)...
+REM Build the executable with targeted optimizations using direct PyInstaller commands
+echo Building executable with PyInstaller (targeted optimization)...
 pyinstaller --clean ^
     --hidden-import=inquirer ^
     --hidden-import=readchar ^
@@ -52,6 +52,18 @@ pyinstaller --clean ^
     --hidden-import=plotly ^
     --hidden-import=plotly.graph_objects ^
     --hidden-import=plotly.express ^
+    --hidden-import=pandas ^
+    --hidden-import=numpy ^
+    --hidden-import=scipy ^
+    --hidden-import=scipy.spatial.distance ^
+    --hidden-import=sklearn ^
+    --hidden-import=sklearn.cluster ^
+    --hidden-import=umap ^
+    --hidden-import=umap.umap_ ^
+    --hidden-import=logomaker ^
+    --hidden-import=ahocorasick ^
+    --hidden-import=Bio ^
+    --hidden-import=Bio.Seq ^
     --copy-metadata readchar ^
     --onedir ^
     --optimize=2 ^
@@ -156,7 +168,6 @@ pyinstaller --clean ^
     --exclude-module tomli ^
     --exclude-module tomllib ^
     --exclude-module zipp ^
-    --exclude-module importlib_metadata ^
     --exclude-module importlib_resources ^
     --exclude-module pathlib2 ^
     --exclude-module scandir ^
@@ -241,8 +252,8 @@ echo Executable location: %DIST_DIR%\cli\cli.exe
 echo Launcher script: %DIST_DIR%\capgenie.bat
 echo.
 echo Optimization features applied:
-echo - Aggressive module exclusion (keeping essential modules)
-echo - matplotlib.pyplot and plotly included for functionality
+echo - Targeted module exclusion (keeping all required modules)
+echo - All required dependencies included as hidden imports
 echo - Optimized Python bytecode
-echo - Minimal dependencies included
+echo - Minimal unnecessary dependencies excluded
 echo - Reduced log verbosity 
