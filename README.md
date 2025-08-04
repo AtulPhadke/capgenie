@@ -25,7 +25,7 @@ Get started by installing **capgenie** onto your machine
 ### What you'll need
 
 - [Python](https://www.python.org/downloads/) version 3.10 or above:
-- All dependencies in requirements.txt
+- All dependencies are in requirements.txt
 
 Run the following to install all dependecies
 
