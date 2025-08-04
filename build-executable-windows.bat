@@ -25,7 +25,7 @@ pip install pyinstaller
 
 REM Install the package
 echo Installing CapGenie...
-pip install -e .
+pip install -e . --user
 
 REM Ensure C++ extensions are built correctly
 echo Building C++ extensions...

@@ -145,7 +145,7 @@ rm -rf "$BUILD_DIR" "$DIST_DIR" "$SPEC_FILE"
 pip install pyinstaller
 
 # Install the package in development mode
-pip install -e .
+        pip install -e . --user
 
 # Create PyInstaller spec file
 cat > "$SPEC_FILE" << 'SPEC_EOF'

@@ -47,7 +47,7 @@ pip install pyinstaller
 
 # Install the package in development mode
 print_status "Installing CapGenie in development mode..."
-pip install -e .
+./install_package.sh
 
 # Build the executable with optimizations for speed
 print_status "Building executable with PyInstaller (optimized for startup speed)..."
