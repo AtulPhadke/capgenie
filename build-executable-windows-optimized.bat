@@ -77,6 +77,12 @@ pyinstaller --clean ^
     --hidden-import=shutil ^
     --hidden-import=pickle ^
     --hidden-import=warnings ^
+    --hidden-import=openpyxl ^
+    --hidden-import=openpyxl.workbook ^
+    --hidden-import=openpyxl.worksheet ^
+    --hidden-import=openpyxl.cell ^
+    --hidden-import=openpyxl.styles ^
+    --hidden-import=seaborn ^
     --copy-metadata readchar ^
     --onedir ^
     --optimize=2 ^

@@ -48,6 +48,12 @@ pyinstaller --clean ^
     --hidden-import=capgenie.fuzzy_match ^
     --hidden-import=capgenie.mani ^
     --hidden-import=capgenie.filter_module ^
+    --hidden-import=openpyxl ^
+    --hidden-import=openpyxl.workbook ^
+    --hidden-import=openpyxl.worksheet ^
+    --hidden-import=openpyxl.cell ^
+    --hidden-import=openpyxl.styles ^
+    --hidden-import=seaborn ^
     --copy-metadata readchar ^
     --onedir ^
     --optimize=2 ^

@@ -54,6 +54,12 @@ print_status "Building executable with PyInstaller (optimized for startup speed)
 pyinstaller --clean \
     --hidden-import=inquirer \
     --hidden-import=readchar \
+    --hidden-import=openpyxl \
+    --hidden-import=openpyxl.workbook \
+    --hidden-import=openpyxl.worksheet \
+    --hidden-import=openpyxl.cell \
+    --hidden-import=openpyxl.styles \
+    --hidden-import=seaborn \
     --copy-metadata readchar \
     --onedir \
     --strip \
