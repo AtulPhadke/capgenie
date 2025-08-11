@@ -11,15 +11,6 @@ from capgenie import denoise # See denoise.cpp for implementation
 
 # Currently all implemented features for pipeline
 
-COMMAND_DICT = {
-    "1": "Counting peptide reads in FASTQ files based on capsid file",
-    "2": "Searching for unknown AAV9 reads in FASTQ files",
-    "3": "Calculating percentage and enrichment values",
-    "4": "Producing Normal Bubble Charts",
-    "5": "Producing Biodistribution Charts",
-    "6": "Denoising bad reads in FASTQ files based on threshold"
-}
-
 usage = "capgenie [-cf FOO] [-f FOO] [-o FOO] -unk [-s FOO] [-e FOO] -w -qual -bar -cls"
 
 parser = argparse.ArgumentParser(description="CAPGENIE CLI")
@@ -43,7 +34,6 @@ parser.add_argument("-s", "--spreadsheet_extension", help="File extension of spr
 parser.add_argument("-e", "--enrichment", help="Enrichment File path")
 parser.add_argument("-b", "--bubble", help="Generate bubble charts", action="store_true")
 parser.add_argument("-fd", "--freq_distribution", help="Generate frequency distribution charts", action="store_true")
-parser.add_argument("-w", "--weighted", action="store_true")
 parser.add_argument("-qual", "--quality_threshold", help="Quality threshold for denoising fastq files", default=False)
 parser.add_argument("-cls", "--clear_cache", help="This option clears all cache", action="store_true")
 parser.add_argument("-ses", "--session", help="DESKTOP: overrides the session name so no command utility is asked")
@@ -105,9 +95,10 @@ class cap_genie:
         self.denoised_dirs = []
 
     """
-    get_files: None
-    -- Shows all folders in the nested directory
-    and allows the user to select which to be proccessed.
+    get_files: None --> list
+    -- Gets all FASTQ files from the nested directory structure
+    * @param [out] files (list) - List of FASTQ file paths
+    ** Recursively finds all FASTQ files in the nested directory
     """
     def get_files(self):
 
@@ -133,9 +124,11 @@ class cap_genie:
         else:
             self.dirs = [os.path.basename(dir) for dir in os.listdir(self.nested_dir) if dir != ".DS_Store"]
     """
-    denoise_files: None
-    -- Denoises files based on quality threshold 
-    and saves them under denoised_ directory.
+    denoise_files: search_aav9 --> None
+    -- Denoises FASTQ files using quality threshold
+    * @param [in] instance (search_aav9) - Search AAV9 instance
+    * @param [out] None - Denoises files and saves results
+    ** Filters low-quality reads from FASTQ files
     """
     def denoise_files(self, instance):
         for dir in self.dirs:
@@ -155,8 +148,10 @@ class cap_genie:
                     instance.save_denoise_result(result, file)
                     print(f"Denoised {file}, saved under {os.path.join(new_dir, file)}.")
     """
-    run_pipeline: None
-    -- Runs the pipeline based on commands the user gives
+    run_pipeline: None --> None
+    -- Main pipeline execution method that processes all selected files
+    * @param [out] None - Executes the complete pipeline workflow
+    ** Orchestrates the entire CAPGENIE pipeline workflow
     """
     def run_pipeline(self):
         instance = search_aav9()
@@ -169,7 +164,7 @@ class cap_genie:
         if self.unknown_variants:
             if None in self.flanks:
                 self._run_flank = False
-                self.ref_seq = self.args.ref_seq
+                self.ref_seq = self.args.refseq
             else:
                 self._run_flank = True
                 upstream = self.flanks[0]
@@ -239,7 +234,7 @@ class cap_genie:
                         if self._run_flank:
                             instance.search_by_flank(upstream, downstream, file_path, data_directory)
                         else:
-                            instance._cpp_filter_count(data_directory, file_path, upstream, downstream)
+                            instance._cpp_filter_count(data_directory, file_path, self.ref_seq)
                     print(f"Finished {file}")
                     files.append(file)
                     spreadsheet_instance.save_file(instance.pkl_file_path, file, data_directory, instructions_link)
@@ -254,10 +249,10 @@ class cap_genie:
                 spreadsheet_instance.save_file(instance.pkl_file_path, avg_enrichment_file, data_directory, instructions_link, avg_file=True)
                 print(f"Created average enrichment pkl/xlsx: {data_directory}")
             if self.bubble:
-                gen_bubble_plots(self.bubble_dir, session_folder, data_directory)
+                gen_bubble_plots(self.bubble_dir, session_folder, data_directory, instance._cache_folder)
                 print(f"Created bubble charts: {data_directory}")
             if self.freq_distribution:
-                gen_bio_graphs(self.freq_dir, session_folder, data_directory)
+                gen_bio_graphs(self.freq_dir, session_folder, data_directory, instance._cache_folder)
                 print(f"Created frequency distribution charts: {data_directory}")
             
         instance._serialize_pkl()

@@ -1,6 +1,7 @@
 pyahocorasick>=2.0.0
 biopython>=1.79
 plotly>=5.0.0
+kaleido>=0.2.1
 pandas>=1.5.0
 pybind11>=2.10.0
 inquirer>=2.7.0

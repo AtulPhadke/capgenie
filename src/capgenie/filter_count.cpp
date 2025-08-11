@@ -25,12 +25,13 @@ FilterResult result;
 
 
 /**
-makeTranslationMap: std::string, std::string --> std::unordered_map<char, char>
--- makes a map of two strings with each other character by character.
- * @param [in] from
- * @param [in] to
- * @param [out] translationMap
-**/
+ * makeTranslationMap: std::string, std::string --> std::unordered_map<char, char>
+-- Makes a map of two strings with each other character by character.
+ * @param [in] from (const std::string&) - Source string for translation mapping
+ * @param [in] to (const std::string&) - Target string for translation mapping
+ * @param [out] translationMap (std::unordered_map<char, char>) - Character-by-character mapping
+** Creates a translation map between two strings
+*/
 std::unordered_map<char, char> makeTranslationMap(const std::string& from, const std::string& to) {
     std::unordered_map<char, char> translationMap;
     
@@ -56,13 +57,14 @@ std::string translateString(const std::string& input, const std::unordered_map<c
 }
 
 /**
-safe_substring: std::string, size_t, size_t --> std::string
+ * safe_substring: std::string, size_t, size_t --> std::string
 -- Wrapper for std::string.substr that checks bounds and avoids
 segmentation faults
- * @param [in] str
- * @param [in] start
- * @param [in] end
- * @param [out] substring
+ * @param [in] str (const std::string&) - The input string
+ * @param [in] start (size_t) - The starting index
+ * @param [in] end (size_t) - The ending index
+ * @param [out] substring (std::string) - The extracted substring
+** Safe substring extraction with bounds checking
 */
 std::string safe_substring(const std::string& str, size_t start, size_t end) {
     if (start >= str.size()) {
@@ -87,10 +89,10 @@ std::unordered_map<char, char> translationMap = makeTranslationMap("ACGT", "TGCA
 process_line: std::string, std::string --> void
 -- Processes a line in the file and grabs AAV9 forward and reverse reads
 and saves it to the FilterCount result.
- * @param [in] line
- * @param [in] ref_seq
+ * @param [in] line (std::string) - The current line from the file
+ * @param [in] ref_seq (std::string) - The reference sequence
 */
-void process_line(std::string line, std::string upstream_ref, std::string downstream_ref) {
+void process_line(std::string line, std::string ref_seq) {
     result.dircheck = "fwd";
     if (line.find("GTGCTTCATTCCAAACCCTC") != std::string::npos) {
         result.reverse_count++;
@@ -117,12 +119,8 @@ void process_line(std::string line, std::string upstream_ref, std::string downst
     auto mer = [&line](int x) -> int {
         return line.find("TGCCCAA") + x;
     };
-    auto up_mer = [&upstream_ref](int x) -> int {
-        return upstream_ref.find("TGCCCAA") + x;
-    };
-
-    auto down_mer = [&downstream_ref](int x) -> int {
-        return downstream_ref.find("TGCCCAA") + x;
+    auto ref_mer = [&ref_seq](int x) -> int {
+        return ref_seq.find("TGCCCAA") + x;
     };
 
     if ((safe_substring(line, mer(28), mer(32))) == "GCAC") {
@@ -132,9 +130,9 @@ void process_line(std::string line, std::string upstream_ref, std::string downst
 
         for (int i = 0; i < mer(-1); i++) {
             size_t line_pos = mer(-1 * i);
-            size_t ref_pos = up_mer(-1 * i);
+            size_t ref_pos = ref_mer(-1 * i);
             if (line_pos != std::string::npos && ref_pos != std::string::npos) {
-                if (line[line_pos] != upstream_ref[ref_pos]) {
+                if (line[line_pos] != ref_seq[ref_pos]) {
                     upstream_mismatches++;
                 }
             } else {
@@ -145,9 +143,9 @@ void process_line(std::string line, std::string upstream_ref, std::string downst
         // Prevent out-of-bounds access when calculating downstream mismatches
         for (int i = 28; i < -1*mer(0 - line.length()); i++) {
             size_t line_pos = mer(i);
-            size_t ref_pos = down_mer(i - 21);
+            size_t ref_pos = ref_mer(i - 21);
             if (line_pos != std::string::npos && ref_pos != std::string::npos) {
-                if (line[line_pos] != downstream_ref[ref_pos]) {
+                if (line[line_pos] != ref_seq[ref_pos]) {
                     downstream_mismatches++;
                 }
             } else {
@@ -178,7 +176,7 @@ void process_line(std::string line, std::string upstream_ref, std::string downst
 reset_result: FilterResult --> void
 -- Resets all result pointers after file 
 has been processed
- * @param [in] result
+ * @param [in] result (FilterResult&) - The result struct to reset
 */
 void reset_result(FilterResult& result) {
     result.forward_reads.clear();
@@ -196,8 +194,9 @@ void reset_result(FilterResult& result) {
 /**
 reset_pointers: char*&, char*& --> void
 -- Resets all pointers after file has been processed
- * @param [in] mapped_data
- * @param [in] line_start
+ * @param [in] mapped_data (char*&) - The mapped data pointer
+ * @param [in] line_start (char*&) - The start of the current line
+ * @param [in] current_pos (char*&) - The current position in the file
 */
 void reset_pointers(char*& mapped_data, char*& line_start, char*& current_pos) {
     mapped_data = nullptr;
@@ -206,13 +205,13 @@ void reset_pointers(char*& mapped_data, char*& line_start, char*& current_pos) {
 }
 
 /**
-filter_count: char*, char* (optional) --> FilterResult
+filter_count: char*, char* --> FilterResult
 -- Runs process_line over the FastQ file and returns FilterResult
- * @param [in] file
- * @param [in] refseq (optional)
- * @param [out] result
+ * @param [in] file (const char*) - The path to the FastQ file
+ * @param [in] refseq (char*) - The reference sequence
+ * @param [out] result (FilterResult) - The result struct to populate
 */
-FilterResult filter_count(const char* file, char* upstream_refseq, char* downstream_refseq) {
+FilterResult filter_count(const char* file, char* refseq) {
     reset_result(result);
 
     int fd = open(file, O_RDONLY);
@@ -248,7 +247,7 @@ FilterResult filter_count(const char* file, char* upstream_refseq, char* downstr
             if ((line_number + 3) % 4 == 0) {
                 result.total_reads++;
                 std::string line(line_start, current_pos - line_start);
-                process_line(line, upstream_refseq, downstream_refseq);
+                process_line(line, refseq);
             }
             line_start = current_pos + 1;
             if ((line_number) % 1000000 == 0) {
@@ -262,7 +261,7 @@ FilterResult filter_count(const char* file, char* upstream_refseq, char* downstr
     if (current_pos == end_pos && *line_start != '\n') {
         if ((line_number + 3) % 4 == 0) {
             std::string line(line_start, end_pos - line_start);
-            process_line(line, upstream_refseq, downstream_refseq);
+            process_line(line, refseq);
         }
         return result;
     }
@@ -297,5 +296,5 @@ PYBIND11_MODULE(filter_module, m) {
         .def_readwrite("null_count", &FilterResult::null_count);
 
     m.def("filter_count", &filter_count, "Filter reads from file",
-          py::arg("file"), py::arg("upstream_refseq"), py::arg("downstream_refseq"));
+          py::arg("file"), py::arg("refseq"));
 }

@@ -12,8 +12,16 @@ class spreadsheet:
         self.cache_folder = cache_folder
 
     """
-    save_file: String, String, String, String, Boolean (optional)
+    save_file: str, str, str, str, bool, bool --> None
     -- Saves file into an excel spreadsheet
+    * @param [in] pkl_file_path (str) - Path to pickle file directory
+    * @param [in] file (str) - File name to save
+    * @param [in] data_directory (str) - Data directory path
+    * @param [in] instruction_link (str) - Instruction link for file extension
+    * @param [in] avg_file (bool) - Whether this is an average file
+    * @param [in] barcode (bool) - Whether to include barcode processing
+    * @param [out] None - Saves Excel file to sheets directory
+    ** Saves processed data to Excel spreadsheet format
     """
     def save_file(self, pkl_file_path, file, data_directory, instruction_link, avg_file=False, barcode=True):
         if instruction_link == "count_known_reads":

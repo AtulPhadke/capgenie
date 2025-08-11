@@ -28,6 +28,14 @@ std::atomic<size_t> low_quality_reads(0);
 std::atomic<size_t> num_reads(0);
 // Variables for storing read quality data
 
+/**
+ * joinPaths: const char*, const char* --> std::string
+-- Joins two file paths and creates a new filename with "denoise_" prefix
+ * @param [in] path1 (const char*) - First path component
+ * @param [in] path2 (const char*) - Second path component
+ * @param [out] final_path (std::string) - Combined path with denoise prefix
+** Creates output filename with denoise prefix
+*/
 std::string joinPaths(const char* path1, const char* path2) {
     if (!path1) path1 = "";
     if (!path2) path2 = "";
@@ -55,6 +63,16 @@ std::string joinPaths(const char* path1, const char* path2) {
     return finalPath;
 }
 
+/**
+ * process_chunk: const char*, size_t, size_t, std::ofstream& --> void
+-- Processes a chunk of FASTQ data and filters reads based on quality threshold
+ * @param [in] data (const char*) - Memory-mapped file data
+ * @param [in] start (size_t) - Starting position in the data
+ * @param [in] end (size_t) - Ending position in the data
+ * @param [in/out] output (std::ofstream&) - Output file stream for high-quality reads
+ * @param [out] None - Writes high-quality reads to output stream
+** Processes FASTQ chunk and filters by quality score
+*/
 void process_chunk(const char* data, size_t start, size_t end, std::ofstream& output) {
     size_t i = start;
     std::string high_quality_reads = "";
@@ -107,6 +125,12 @@ struct DenoiseResult {
     std::string output_filename;
 };
 
+/**
+ * clear_pointers: None --> void
+-- Clears global atomic variables for next function usage
+ * @param [out] None - Resets global variables to zero
+** Resets global counters for next denoise operation
+*/
 void clear_pointers() {
     //Clear for next function usage
     total_quality_sum = 0;
@@ -115,6 +139,16 @@ void clear_pointers() {
     num_reads = 0;
 }
 
+/**
+ * denoise: const char*, const char*, const char*, int --> DenoiseResult
+-- Filters low-quality reads from a FASTQ file based on quality threshold
+ * @param [in] filename (const char*) - Name of the output file
+ * @param [in] file_path (const char*) - Path to the input FASTQ file
+ * @param [in] output_path (const char*) - Path for output directory
+ * @param [in] threshold (int) - Quality threshold for filtering
+ * @param [out] result (DenoiseResult) - Statistics about the denoising process
+** Main denoising function that filters FASTQ reads by quality
+*/
 DenoiseResult denoise(const char* filename, const char* file_path, const char* output_path, int threshold) {
     clear_pointers();
     std::string output_filename = joinPaths(output_path, filename);

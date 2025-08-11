@@ -60,10 +60,14 @@ class search_aav9:
         return pkl.load(open(self._instructions_file, "rb"))
     
     """
-    confirm_peptide: CLASS, String, String --> Boolean or String
+    confirm_peptide: cls, str, str --> bool or str
     -- Takes a Peptide and it's sequence and makes sure
     -- the sequence is in the current orientation. Returns False
     -- if no orientation is valid, otherwise returns the valid orientation
+    * @param [in] seq (str) - DNA sequence to check
+    * @param [in] peptide (str) - Peptide sequence to search for
+    * @param [out] result (bool or str) - False if no valid orientation, otherwise the valid sequence
+    ** Confirms peptide orientation in DNA sequence
     """    
     @classmethod
     def confirm_peptide(cls, seq, peptide):
@@ -75,9 +79,12 @@ class search_aav9:
         return False
     
     """
-    find_upstream_downstream: CLASS, [List-of String] --> String, String
+    find_upstream_downstream: cls, list[str] --> tuple[str, str]
     -- Takes a list of sequences with the upstream and downstream sequences
     -- and returns the common upstream and downstream sequence
+    * @param [in] sequences (list[str]) - List of sequences to analyze
+    * @param [out] result (tuple[str, str]) - Common upstream and downstream sequences
+    ** Finds common upstream and downstream sequences
     """
     @classmethod
     def find_upstream_downstream(cls, sequences):
@@ -103,9 +110,13 @@ class search_aav9:
         return upstream, downstream
     
     """
-    find_amplicons: CLASS, [[String, String]], String, String --> [[String, String]]
-    -- Takes the current peptide map and returns a new one without the amplicons.
-    -- Also confirms each peptide sequence and returns the current orientation
+    find_amplicons: cls, list, str, str --> dict
+    -- Finds amplicons between upstream and downstream sequences
+    * @param [in] trimmed_csv (list) - List of peptide-sequence tuples
+    * @param [in] upstream (str) - Upstream sequence
+    * @param [in] downstream (str) - Downstream sequence
+    * @param [out] peptide_map (dict) - Map of amplicon sequences to peptides
+    ** Extracts 21-mer amplicons between flanking sequences
     """
     @classmethod
     def find_amplicons(cls, trimmed_csv, upstream, downstream):
@@ -127,9 +138,12 @@ class search_aav9:
         return peptide_map
     
     """
-    trim_amplicon_sequence: CLASS, String
+    trim_amplicon_sequence: cls, str --> dict
     -- Takes a capsid file and clears upstream and downstream sequences,
     -- then returns the new peptide map
+    * @param [in] capsid_file (str) - Path to capsid file
+    * @param [out] peptide_map (dict) - Map of trimmed sequences to peptides
+    ** Trims flanking sequences from capsid file
     """
     @classmethod
     def trim_amplicon_sequence(cls, capsid_file):
@@ -139,8 +153,11 @@ class search_aav9:
         return peptide_map
     
     """
-    create_peptide_map: CLASS, String
+    create_peptide_map: cls, str --> dict
     -- Takes a capsid file and returns a peptide map
+    * @param [in] capsid_file (str) - Path to capsid file
+    * @param [out] peptide_map (dict) - Map of sequences to peptides
+    ** Creates peptide map from capsid file
     """
     @classmethod
     def create_peptide_map(cls, capsid_file):
@@ -156,8 +173,11 @@ class search_aav9:
         return peptide_map
     
     """
-    load_dna_seq: string
+    load_dna_seq: str --> str
     -- Takes a fastQ file and gets the DNA sequence from the file
+    * @param [in] fastq_file (str) - Path to FASTQ file
+    * @param [out] dna_seq (str) - Concatenated DNA sequences from file
+    ** Extracts DNA sequences from FASTQ file
     """
     def load_dna_seq(self, fastq_file):
         f=open(os.path.join(fastq_file), "r")
@@ -168,10 +188,15 @@ class search_aav9:
         return dna_seq
     
     """
-    count_known_reads: Dict(peptide, sequence), String, String, Number
+    count_known_reads: dict, str, str --> None
     -- Takes a peptide_map from the given csv file and counts the
     -- number of occurances of every peptide. Then it prunes reads
     -- beyond a given threshold.
+    * @param [in] peptide_map (dict) - Map of peptides to sequences
+    * @param [in] fastq_file (str) - Path to FASTQ file
+    * @param [in] data_directory (str) - Data directory path
+    * @param [out] None - Saves counts to pickle file
+    ** Counts known peptide reads in FASTQ file
     """
     def count_known_reads(self, peptide_map, fastq_file, data_directory):
         new_path = os.path.join(self._pkl_file_path, data_directory)
@@ -211,6 +236,16 @@ class search_aav9:
             file.truncate()
             pkl.dump(content, file)
 
+    """
+    search_by_flank: str, str, str, str --> None
+    -- Searches for unknown variants between upstream and downstream sequences
+    * @param [in] upstream (str) - Upstream flanking sequence
+    * @param [in] downstream (str) - Downstream flanking sequence
+    * @param [in] fastq_file (str) - Path to FASTQ file
+    * @param [in] data_directory (str) - Data directory path
+    * @param [out] None - Saves unknown variants to pickle file
+    ** Searches for unknown variants between flanking sequences
+    """
     def search_by_flank(self, upstream, downstream, fastq_file, data_directory):
         new_path = os.path.join(self._pkl_file_path, data_directory)
         if not os.path.exists(new_path):
@@ -271,12 +306,16 @@ class search_aav9:
             pkl.dump(content, file)
 
     """
-    _cpp_fuzzy_match: Dict(peptide, sequence), string, string, bool (optional)
+    _cpp_fuzzy_match: dict, str, str, int, bool --> None
     -- Fuzzy matches peptides in two ways: substitutions w/o indels.
+    * @param [in] peptide_map (dict) - Map of peptides to sequences
+    * @param [in] fastq_file (str) - Path to FASTQ file
+    * @param [in] data_directory (str) - Data directory path
+    * @param [in] mismatches (int) - Number of allowed mismatches
+    * @param [in] subOnly (bool) - If True, only allow substitutions; if False, allow indels too
+    * @param [out] None - Saves fuzzy match results to pickle file
     ** Note: substitutions w indels is much slower than just substitutions, but provides
-    ** more accurate results
-    ** Powered by edlib. Please visit and give credit at github.com/Martinos/edlib
-    -- Check fuzzy_match.cpp for more info
+    ** more accurate results. Powered by edlib. Please visit and give credit at github.com/Martinos/edlib
     """
     def _cpp_fuzzy_match(self, peptide_map, fastq_file, data_directory, mismatches, subOnly=False):
         new_path = os.path.join(self._pkl_file_path, data_directory)
@@ -304,18 +343,23 @@ class search_aav9:
             pkl.dump(content, file)
 
     """
-    _cpp_filter_count: String, String, refseq (optional)
+    _cpp_filter_count: str, str, str --> None
     -- Python wrapper for filter_count.cpp (see for more detail)
     -- Searches fastq files for AAV9 sequence containing 21-mer inserts 
-    -- and pulls out, sorts and counts them. 
+    -- and pulls out, sorts and counts them.
+    * @param [in] data_directory (str) - Data directory path
+    * @param [in] fastq_file (str) - Path to FASTQ file
+    * @param [in] refseq (str) - Reference sequence
+    * @param [out] None - Saves filtered results to pickle file
+    ** Wrapper for C++ filter_count function
     """
-    def _cpp_filter_count(self, data_directory, fastq_file, upstream_ref, downstream_ref):
+    def _cpp_filter_count(self, data_directory, fastq_file, refseq):
         new_path = os.path.join(self._pkl_file_path, data_directory)
         if not os.path.exists(new_path):
             os.mkdir(new_path)
 
         result = filter_module.FilterResult()
-        result = filter_module.filter_count(fastq_file.encode(), upstream_ref.encode(), downstream_ref.encode())
+        result = filter_module.filter_count(fastq_file.encode(), refseq.encode())
 
         print(len(result.forward_reads))
         print(len(result.reverse_reads))
@@ -338,9 +382,14 @@ class search_aav9:
             pkl.dump(content, file)
 
     """
-    add_decimal: {String: Number}, String
+    add_decimal: dict, str, bool --> None
     -- Add's a Decimal column to a dictionary with Peptide's and there
     -- counts
+    * @param [in] data_dict (dict) - Dictionary with peptide counts
+    * @param [in] file (str) - Path to save pickle file
+    * @param [in] merc (bool) - Whether to translate peptides
+    * @param [out] None - Saves DataFrame with decimal column to pickle file
+    ** Adds decimal column to peptide count dictionary
     """
     def add_decimal(self, data_dict, file, merc=False):
         df = pd.DataFrame(list(data_dict.items()), columns=["Peptide", "Count"])
@@ -355,9 +404,14 @@ class search_aav9:
         df.to_pickle(file)
 
     """
-    create_avg_pkl: String, [List-of String], String
+    create_avg_pkl: str, list, str --> str
     -- Creates an average pkl file with all the data from the other fastq 
     -- files. Adds a Decimal Column too.
+    * @param [in] data_directory (str) - Data directory path
+    * @param [in] files (list) - List of file names
+    * @param [in] instruction_link (str) - Instruction link for file extension
+    * @param [out] result (str) - Name of the generated average file
+    ** Creates average pickle file from multiple FASTQ files
     """
     def create_avg_pkl(self, data_directory, files, instruction_link):
         if instruction_link == "count_known_reads":
@@ -385,8 +439,11 @@ class search_aav9:
         return f"average_{data_directory}.fastq"
     
     """
-    sort_list: [List-of Any] --> [List-of Any]
+    sort_list: list --> OrderedDict
     -- Takes a list of peptides and sorts it based on frequency
+    * @param [in] lst (list) - List of items to sort
+    * @param [out] sorted_lst (OrderedDict) - Sorted dictionary by frequency
+    ** Sorts list by frequency in descending order
     """
     def sort_list(self, lst):
         unsorted = Counter(lst)
@@ -394,8 +451,11 @@ class search_aav9:
         return OrderedDict(sorted_lst)
 
     """
-    prune_reads: None --> [List-of Any]
-    -- Prunes similar reads beyong a given threshold
+    prune_reads: float, OrderedDict --> OrderedDict
+    -- Prunes similar reads beyond a given threshold
+    * @param [in] threshold (float) - Frequency threshold for pruning
+    * @param [in] sorted_merlist (OrderedDict) - Sorted dictionary of sequences and counts
+    * @param [out] pruned_merlist (OrderedDict) - Pruned dictionary with similar reads merged
     ** Forked from Killian Hanlon's Shuttlecock package
     ** Improved for efficiency and optimization
     """
@@ -430,6 +490,13 @@ class search_aav9:
 
         return sorted_merlist
     
+    """
+    translate: str --> str
+    -- Translates DNA sequence to protein sequence using standard genetic code
+    * @param [in] dna_seq (str) - DNA sequence to translate
+    * @param [out] protein (str) - Translated protein sequence
+    ** Translates DNA to protein using codon table
+    """
     def translate(self, dna_seq):
         # Standard genetic code table
         codon_table = {
@@ -456,10 +523,23 @@ class search_aav9:
         for i in range(0, len(dna_seq) - 2, 3):
             codon = dna_seq[i:i+3].upper()
             amino_acid = codon_table.get(codon, "X") 
+            
+            # Stop translation when encountering a stop codon
+            if amino_acid == "*":
+                break
+                
             protein.append(amino_acid)
 
         return ''.join(protein)
     
+    """
+    save_denoise_result: DenoiseResult, str --> None
+    -- Saves denoising results to instructions file
+    * @param [in] result (DenoiseResult) - Denoising result object
+    * @param [in] file (str) - File name for saving results
+    * @param [out] None - Saves denoising results to instructions file
+    ** Saves denoising statistics to session instructions
+    """
     def save_denoise_result(self, result, file):
         with open(self._instructions_file, "rb") as instruction_file:
             content = pkl.load(instruction_file)
@@ -487,6 +567,12 @@ class search_aav9:
             pkl.dump(content, instruction_file)
             
 
+    """
+    _serialize_pkl: None --> None
+    -- Serializes pickle instructions to JSON format
+    * @param [out] None - Saves instructions as JSON file
+    ** Converts pickle instructions to JSON format for human readability
+    """
     def _serialize_pkl(self):
         with open(self._instructions_file, "rb+") as instruction_file:
             content = pkl.load(instruction_file)
@@ -495,9 +581,11 @@ class search_aav9:
             json.dump(content, f)
 
     """
-    init_session: None
+    init_session: None --> None
     -- Creates a new session based on user input and handles
     -- file paths for the future
+    * @param [out] None - Initializes session directory and files
+    ** Creates new session or loads existing session based on user choice
     """
     def init_session(self):
         self._cache_folder = os.path.expanduser(mani.get_cache_folder())
@@ -537,9 +625,12 @@ class search_aav9:
             os.mkdir(self._pkl_file_path)
         
     """
-    _override_session: str --> void
+    _override_session: str --> None
     -- Creates a new session based on session_name,
     -- THIS IS USED FOR THE DESKTOP APPLICATION
+    * @param [in] session_folder (str) - Name of the session folder
+    * @param [out] None - Creates session directory and files
+    ** Creates new session with specified name for desktop application
     """
     def _override_session(self, session_folder):
         self._cache_folder = os.path.expanduser(mani.get_cache_folder())
@@ -558,6 +649,13 @@ class search_aav9:
         if not os.path.exists(self._pkl_file_path):
             os.mkdir(self._pkl_file_path)
 
+    """
+    save_to_output: str --> None
+    -- Saves session data to output directory
+    * @param [in] output_dir (str) - Output directory path
+    * @param [out] None - Copies session data to output directory
+    ** Copies all session data to specified output directory
+    """
     def save_to_output(self, output_dir):
         dir_to_copy = os.path.join(self._cache_folder, self._save_dir)
         if not os.path.exists(output_dir):

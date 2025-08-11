@@ -10,9 +10,12 @@
 
 namespace py = pybind11;
 
-/*
-prune_reads: int, std::map<std::string, int>
+/**
+ * prune_reads: int, std::map<std::string, int> --> std::map<std::string, int>
 -- Prunes reads that are very similar with each other.
+ * @param [in] THRESHOLD (int) - Hamming distance threshold for pruning
+ * @param [in] merlist (std::map<std::string, int>&) - Map of sequences and their counts
+ * @param [out] pruned_merlist (std::map<std::string, int>) - Pruned map of sequences
 ** Hamming distance threshold is 0.2
 */
 std::map<std::string, int> prune_reads(const int THRESHOLD, std::map<std::string, int>& merlist) {

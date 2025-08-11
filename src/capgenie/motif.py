@@ -29,6 +29,13 @@ class Motif:
             self.aa_list = 'ACGT'
         self.aa_to_index = {aa: i for i, aa in enumerate(self.aa_list)}
 
+    """
+    one_hot_encode: str --> np.ndarray
+    -- Converts a sequence to one-hot encoded representation
+    * @param [in] seq (str) - Input sequence to encode
+    * @param [out] one_hot (np.ndarray) - One-hot encoded sequence
+    ** Converts sequence to flattened one-hot encoding
+    """
     def one_hot_encode(self, seq):
         length = len(seq)
         depth = len(self.aa_list)
@@ -38,6 +45,12 @@ class Motif:
                 one_hot[i, self.aa_to_index[aa]] = 1
         return one_hot.flatten()
 
+    """
+    cluster_motifs: None --> defaultdict
+    -- Clusters sequences using UMAP dimensionality reduction and DBSCAN
+    * @param [out] clusters (defaultdict) - Dictionary of cluster labels to sequences
+    ** Uses UMAP and DBSCAN to cluster similar sequences
+    """
     def cluster_motifs(self):
         #if self.isProtein:
         encoded_seqs = np.array([self.one_hot_encode(seq) for seq in self.seqs])
@@ -55,6 +68,17 @@ class Motif:
 
         return clusters
     
+    """
+    extract_wildcard_motifs: list, int, int, int, int --> dict
+    -- Extracts wildcard motifs from cluster sequences
+    * @param [in] cluster_seqs (list) - List of sequences in cluster
+    * @param [in] min_len (int) - Minimum motif length
+    * @param [in] max_len (int) - Maximum motif length
+    * @param [in] max_wildcards (int) - Maximum number of wildcards
+    * @param [in] min_count (int) - Minimum count threshold
+    * @param [out] motifs (dict) - Dictionary of motifs to counts
+    ** Extracts motifs with wildcards from sequence clusters
+    """
     def extract_wildcard_motifs(self, cluster_seqs, min_len=3, max_len=7, max_wildcards=2, min_count=2):
         motif_counter = Counter()
         for seq in cluster_seqs:
@@ -78,6 +102,13 @@ class Motif:
                     motif_counter[window] += 1
         return {str(motif): int(count) for motif, count in motif_counter.items() if count >= min_count}
     
+    """
+    get_motifs: str --> None
+    -- Gets motifs from clustered sequences and saves to JSON
+    * @param [in] file_path (str) - Path to save motifs JSON file
+    * @param [out] None - Saves motifs to motifs.json file
+    ** Processes clusters and saves motifs to file
+    """
     def get_motifs(self, file_path):
         clusters = self.cluster_motifs()
         motifClusters = {}
@@ -89,6 +120,12 @@ class Motif:
         with open(os.path.join(file_path, "motifs.json"), 'w') as f:
             json.dump(motifClusters, f, indent=4)
 
+    """
+    compute_frequencies: None --> list
+    -- Computes frequency of each character at each position
+    * @param [out] freqs (list) - List of frequency dictionaries for each position
+    ** Calculates position-wise character frequencies
+    """
     def compute_frequencies(self):
         L = len(self.seqs[0])
         freqs = [defaultdict(float) for _ in range(L)]
@@ -101,6 +138,13 @@ class Motif:
                 pos_freq[k] /= len(self.seqs)
         return freqs
 
+    """
+    compute_info_content: list --> list
+    -- Computes information content at each position
+    * @param [in] freqs (list) - List of frequency dictionaries
+    * @param [out] info (list) - List of information content scores
+    ** Calculates information content using entropy
+    """
     def compute_info_content(self, freqs):
         info = []
         alphabet_size = len(self.aa_list)
@@ -113,6 +157,13 @@ class Motif:
             info.append(max_entropy - entropy)
         return info
 
+    """
+    createMotifLogo: str --> None
+    -- Creates and saves a motif logo visualization
+    * @param [in] file_path (str) - Path to save the motif logo
+    * @param [out] None - Saves motif logo plot to file
+    ** Creates sequence logo visualization using logomaker
+    """
     def createMotifLogo(self, file_path):
         freqs = self.compute_frequencies()
         infoScores = self.compute_info_content(freqs)

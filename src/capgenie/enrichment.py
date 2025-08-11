@@ -12,30 +12,40 @@ class enrichment:
         self.cache_folder = cache_folder
 
     """
-    process_dict: dic
-    # dic --> Dictionary of Peptides and Counts
+    process_dict: dict --> dict
     -- Takes a dictionary and makes sure to return float values
     of each count
+    * @param [in] dic (dict) - Dictionary with percentage values
+    * @param [out] result (dict) - Dictionary with converted float values
+    ** Converts percentage strings to float values
     """
 
     def process_dict(self, dic):
         return {x:self.p2f(y) for x,y in dic.items() if self.p2f(y)!=0}
 
     """
-    p2f: x
-    # x --> Percentage number
+    p2f: any --> float
     -- Takes a percentage number and converts into a python
     float type
+    * @param [in] x (any) - Percentage number (string or numeric)
+    * @param [out] result (float) - Converted float value
+    ** Converts percentage to float (divides by 100)
     """
 
     def p2f(self,x):
         return float(x.strip('%'))/100
 
     """
-    calc_enrichment: pre_insert
-    # pre_insert = The pre insert file used for calculating enrichment
+    calc_enrichment: str, str, list, str, str --> str
     -- Calculates the enrichment of all fastq files and saves them into 
     excel sheets and .pkl
+    * @param [in] pre_insert (str) - The pre insert file used for calculating enrichment
+    * @param [in] session_folder (str) - Session folder path
+    * @param [in] files (list) - List of files to process
+    * @param [in] data_directory (str) - Data directory path
+    * @param [in] instruction_name (str) - Instruction name for file extension
+    * @param [out] result (str) - Name of the generated enrichment file
+    ** Calculates enrichment factors for peptide data
     """
 
     def calc_enrichment(self, pre_insert, session_folder, files, data_directory, instruction_name):

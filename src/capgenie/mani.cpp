@@ -10,9 +10,11 @@
 namespace py = pybind11;
 namespace fs = std::filesystem;
 
-/*
-get_cache_folder: None --> String
+/**
+ * get_cache_folder: None --> std::string
 -- Gets the path of the cache folder based on the system
+ * @param [out] cache_path (std::string) - Path to the cache folder
+** Platform-specific cache folder determination
 */
 std::string get_cache_folder() {
     fs::path myPath = "";
@@ -42,9 +44,11 @@ std::string get_cache_folder() {
         return myPath.string();
 }
 
-/*
-clear_cache_folder: None --> None
+/**
+ * clear_cache_folder: None --> void
 -- Clears all capgenie cache
+ * @param [out] None - No return value, clears cache folder contents
+** Removes all contents from the cache folder
 */
 void clear_cache_folder() {
     std::string cache_folder = get_cache_folder();
@@ -57,10 +61,13 @@ void clear_cache_folder() {
     }
 }
 
-/*
-formatBytes: std::streampos (tellg) --> std::string
+/**
+ * formatBytes: std::streampos --> std::string
 -- Takes a number of bytes and formats it into
 -- a byte string, such as "10 MB" or "18.3 GB"
+ * @param [in] pos (std::streampos) - Number of bytes to format
+ * @param [out] formatted_string (std::string) - Formatted byte string with units
+** Converts byte count to human-readable format
 */
 std::string formatBytes(std::streampos pos) {
     const char* units[] = { "B", "KB", "MB", "GB", "TB"};
@@ -78,10 +85,13 @@ std::string formatBytes(std::streampos pos) {
     return out.str();
 }
 
-/*
-fastqFileSize: std::string --> std::string
+/**
+ * fastqFileSize: std::string --> std::string
 -- Gets the file size of the fastQ file based on
 -- tellg().
+ * @param [in] filePath (std::string&) - Path to the FASTQ file
+ * @param [out] file_size (std::string) - Formatted file size string
+** Returns formatted file size for FASTQ files
 */
 std::string fastqFileSize(std::string &filePath) {
     std::ifstream file(filePath, std::ios::binary | std::ios::ate); // open at end
@@ -92,10 +102,13 @@ std::string fastqFileSize(std::string &filePath) {
     return formatBytes(file.tellg());
 }
 
-/*
-fastqLineCount: std::string --> int
+/**
+ * fastqLineCount: std::string --> int
 -- Gets the number of reads a FastQ file
 -- has. (Only gives number of sequence lines)
+ * @param [in] filename (const std::string&) - Path to the FASTQ file
+ * @param [out] line_count (int) - Number of sequence reads in the file
+** Counts the number of sequences in a FASTQ file
 */
 int fastqLineCount(const std::string& filename) {
     std::ifstream file(filename);
@@ -111,9 +124,13 @@ int fastqLineCount(const std::string& filename) {
     return lineCount / 4; // For each DNA SEQ
 }
 
-/*
-split_string: std::string_view, char --> std::vector<std::string>
+/**
+ * split_string: std::string_view, char --> std::vector<std::string>
 -- Splits a string by a delimiter
+ * @param [in] str (std::string_view) - String to split
+ * @param [in] delimiter (char) - Delimiter character to split by
+ * @param [out] tokens (std::vector<std::string>) - Vector of split substrings
+** Splits a string into tokens based on delimiter
 */
 std::vector<std::string> split_string(std::string_view str, char delimiter) {
     std::vector<std::string> tokens;
@@ -131,10 +148,14 @@ std::vector<std::string> split_string(std::string_view str, char delimiter) {
     return tokens;
 }
 
-/*
-format_element: std::string, size_t --> std::string
+/**
+ * format_element: std::string, size_t --> std::string
 -- Takes a string and pads it with whitespace to get
 -- max_length.
+ * @param [in] s (const std::string&) - String to format
+ * @param [in] max_length (size_t) - Maximum length for formatting
+ * @param [out] formatted_string (std::string) - Centered and padded string
+** Centers and pads a string to specified length
 */
 std::string format_element(const std::string& s, size_t max_length) {
     int empty_space = max_length - s.length();
@@ -147,9 +168,12 @@ std::string format_element(const std::string& s, size_t max_length) {
     }
 }
 
-/*
-getMaxLength: std::vector<std::string> --> int
+/**
+ * getMaxLength: std::vector<std::string> --> size_t
 -- Returns the length of the biggest string in the vector.
+ * @param [in] strings (const std::vector<std::string>&) - Vector of strings to check
+ * @param [out] max_length (size_t) - Length of the longest string
+** Finds the maximum length among strings in a vector
 */
 size_t getMaxLength(const std::vector<std::string>& strings) {
     size_t maxLen = 0;
@@ -161,10 +185,13 @@ size_t getMaxLength(const std::vector<std::string>& strings) {
     return maxLen;
 }
 
-/*
-pprint_csv: std::string
+/**
+ * pprint_csv: std::string --> void
 -- Pretty prints a capsid csv file so that users can see
 -- it in the command line terminal.
+ * @param [in] filepath (const std::string&) - Path to the CSV file to print
+ * @param [out] None - Prints formatted output to console
+** Pretty prints a peptide CSV file in a table format
 */
 void pprint_csv(const std::string& filepath) {
     std::ifstream file(filepath);

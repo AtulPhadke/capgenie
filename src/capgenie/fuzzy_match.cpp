@@ -18,9 +18,9 @@ namespace py = pybind11;
  * hamming_distance: std::string, std::string --> int
 -- Calculates the hamming distance between two strings
 -- in the fastest way possible.
- * @param [in] s1
- * @param [in] s2
- * @param [out] distance
+ * @param [in] s1 (std::string) - First string to compare
+ * @param [in] s2 (std::string) - Second string to compare
+ * @param [out] distance (int) - Hamming distance between the strings
 ** Simple Hamming distance calculate
 */
 int hamming_distance(const std::string& s1, const std::string& s2) {
@@ -36,7 +36,15 @@ int hamming_distance(const std::string& s1, const std::string& s2) {
     return distance;
 }
 
-// Native levenshtein without EDLIB. USED FOR REFERENCE
+/**
+ * peptide_levenshtein_distance: std::string, std::string --> int
+-- Calculates the Levenshtein distance between two strings using
+-- dynamic programming approach for reference implementation.
+ * @param [in] s1 (std::string) - First string to compare
+ * @param [in] s2 (std::string) - Second string to compare
+ * @param [out] distance (int) - Levenshtein distance between the strings
+** Native Levenshtein distance calculation without EDLIB
+*/
 int peptide_levenshtein_distance(const std::string& s1, const std::string& s2) {
     size_t len1 = s1.size();
     size_t len2 = s2.size();
@@ -65,13 +73,13 @@ int peptide_levenshtein_distance(const std::string& s1, const std::string& s2) {
 }
 
 /**
-count_hamming_matches: std::string, std::string, int --> int
+ * count_hamming_matches: std::string, std::string, int --> int
 -- Counts all fuzzy matches (only substitutions) in the dna_seq string
 -- and returns the number of matches where it is <= max_mismatches.
- * @param [in] query
- * @param [in] dna_seq
- * @param [in] max_mismatches
- * @param [out] match_count
+ * @param [in] query (std::string) - Query sequence to search for
+ * @param [in] dna_seq (std::string) - DNA sequence to search in
+ * @param [in] max_mismatches (int) - Maximum number of allowed mismatches
+ * @param [out] match_count (int) - Number of matches found
 ** This is for only substitutions
 */
 int count_hamming_matches(const std::string& query, const std::string& dna_seq, int max_mismatches) {
@@ -116,16 +124,16 @@ int count_hamming_matches(const std::string& query, const std::string& dna_seq, 
 }
 
 /**
-levenshtein_match_count_thread: std::string, std::string, int, size_t, size_t
+ * levenshtein_match_count_thread: std::string, std::string, int, size_t, size_t --> int
 -- Returns the total number of levenshtein matches where it has less than
 max_mismatches. Uses EDLIB and is a thread helper for count_levenshtein_matches.
 counts for only a part of the string.
- * @param [in] query
- * @param [in] dna
- * @param [in] max_distance
- * @param [in] start
- * @param [in] end
- * @param [out] count
+ * @param [in] query (std::string) - Query sequence to search for
+ * @param [in] dna (std::string) - DNA sequence to search in
+ * @param [in] max_distance (int) - Maximum allowed edit distance
+ * @param [in] start (size_t) - Starting position in the DNA sequence
+ * @param [in] end (size_t) - Ending position in the DNA sequence
+ * @param [out] count (int) - Number of matches found in this chunk
 ** Forked from EDLIB docs
 */
 int levenshtein_match_count_thread(const std::string& query, const std::string& dna, int max_distance, size_t start, size_t end) {
@@ -148,13 +156,13 @@ int levenshtein_match_count_thread(const std::string& query, const std::string& 
     return count;
 }
 /**
- count_levenstein_matches: std::string, std::string, int --> int
- -- Parent function for levenshtein_match_count_thread that splits dna_seq into
- chunks and parallel processes levenshtein_match_count_thread.
- * @param [in] query
- * @param [in] dna_seq
- * @param [in] max_distance
- * @param [out] total_count
+ * count_levenstein_matches: std::string, std::string, int --> int
+-- Parent function for levenshtein_match_count_thread that splits dna_seq into
+chunks and parallel processes levenshtein_match_count_thread.
+ * @param [in] query (std::string) - Query sequence to search for
+ * @param [in] dna_seq (std::string) - DNA sequence to search in
+ * @param [in] max_distance (int) - Maximum allowed edit distance
+ * @param [out] total_count (int) - Total number of matches found across all chunks
 ** This is for substitutions + indels.
 */
 int count_levenstein_matches(const std::string& query, const std::string& dna_seq, int max_distance) {
@@ -187,14 +195,14 @@ int count_levenstein_matches(const std::string& query, const std::string& dna_se
     return total_count;
 }
 /**
-fuzzy_match: std::vector<std::string>, std::string, int, bool --> std::unordered_map<std::string, int>
+ * fuzzy_match: std::vector<std::string>, std::string, int, bool --> std::unordered_map<std::string, int>
 -- Finds all the fuzzy matches of all queries in dna_seq. Has two modes,
 substitutions w/o indels, that are dictated by the boolean subOnly.
- * @param [in] queries
- * @param [in] dna_seq
- * @param [in] max_mismatch
- * @param [in] subOnly
- * @param [out] counts
+ * @param [in] queries (std::vector<std::string>&) - Vector of query sequences to search for
+ * @param [in] dna_seq (std::string) - DNA sequence to search in
+ * @param [in] max_mismatch (int) - Maximum number of allowed mismatches
+ * @param [in] subOnly (bool) - If true, only allow substitutions; if false, allow indels too
+ * @param [out] counts (std::unordered_map<std::string, int>) - Map of query sequences to their match counts
 ** Function that is exported to PYBIND11
 */
 std::unordered_map<std::string, int> fuzzy_match(std::vector<std::string>& queries, const std::string& dna_seq, int max_mismatch, bool subOnly) {
