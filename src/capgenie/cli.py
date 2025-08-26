@@ -248,7 +248,7 @@ class cap_genie:
                 print(f"Calculated enrichment: {data_directory}")
                 spreadsheet_instance.save_file(instance.pkl_file_path, avg_enrichment_file, data_directory, instructions_link, avg_file=True)
                 print(f"Created average enrichment pkl/xlsx: {data_directory}")
-            if self.bubble:
+            if self.bubble and self.enrichment_file:
                 gen_bubble_plots(self.bubble_dir, session_folder, data_directory, instance._cache_folder)
                 print(f"Created bubble charts: {data_directory}")
             if self.freq_distribution:
