@@ -1,0 +1,2 @@
+[console_scripts]
+capgenie = capgenie.cli:main

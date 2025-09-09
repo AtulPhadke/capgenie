@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: capgenie
+Version: 0.2.0
+Summary: A bioinformatics tool for sequence analysis
+License: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: pyahocorasick>=2.0.0
+Requires-Dist: biopython>=1.79
+Requires-Dist: plotly>=5.0.0
+Requires-Dist: pandas>=1.5.0
+Requires-Dist: pybind11>=2.10.0
+Requires-Dist: inquirer>=2.7.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: scikit-learn>=1.0.0
+Requires-Dist: umap-learn>=0.5.0
+Requires-Dist: logomaker>=0.8
+Requires-Dist: scipy>=1.7.0
+Requires-Dist: numpy>=1.21.0

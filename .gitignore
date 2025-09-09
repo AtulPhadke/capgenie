@@ -1,0 +1,6 @@
+build/
+build_optimized.sh
+setup_fast.py
+*.so
+src/capgenie/build/
+src/capgenie/__pycache__/
